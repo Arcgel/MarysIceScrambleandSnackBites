@@ -2,7 +2,7 @@
   <nav class="NavbarModal">
     <div class="logo">
       <img src="../images/logo-removebg-preview.png" alt="IceScramble" @click="Menu">
-      <RouterLink :to="{ about }"><h2>Mary's Ice Screamble and SnackBites</h2></RouterLink>
+      <RouterLink :to="{ about }"><h2>Mary's Ice Scramble and SnackBites</h2></RouterLink>
     </div>
     <div class="actualnav">
       <ul>
