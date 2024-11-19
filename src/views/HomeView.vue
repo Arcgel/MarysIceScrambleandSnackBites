@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const Menu = () => {
-  router.push('/about')
+  router.push('/Menu')
 }
 
 </script>
@@ -25,7 +25,6 @@ const Menu = () => {
 .EntMain{
   width: 100%;
   height: 100vh;
-  font-family: 'Courier New', Courier, monospace;
   background-image: url(../images/1089637.png) ;
   background-size: cover;
   background-repeat: no-repeat;

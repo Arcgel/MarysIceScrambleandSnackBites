@@ -2,17 +2,17 @@
   <nav class="NavbarModal">
     <div class="logo">
       <img src="../images/logo-removebg-preview.png" alt="IceScramble" @click="Menu">
-      <RouterLink :to="{ about }"><h2>Mary's Ice Scramble and SnackBites</h2></RouterLink>
+      <RouterLink :to="{ menu }"><h2>Mary's Ice Scramble and SnackBites</h2></RouterLink>
     </div>
     <div class="actualnav">
       <ul>
-        <RouterLink to="/"><li>Order Now</li></RouterLink>
         <li><details>
         <Summary>Cart</Summary>
         <ul>
           <RouterLink to="/"><li>SaveInformation</li></RouterLink>
           <RouterLink to="/"><li>Checkout</li></RouterLink>
         </ul></details></li>
+        <RouterLink to="/"><li>Order Now</li></RouterLink>
       </ul>
     </div>
   </nav>
@@ -42,7 +42,7 @@ a, a:visited {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1vw;
+  padding: 0.5vw;
   position: absolute;
   width: 100%;
   max-width: 100vw;
@@ -80,6 +80,7 @@ a, a:visited {
 
 .actualnav details {
   cursor: pointer;
+  text-wrap: pretty;
 }
 
 .actualnav summary {
