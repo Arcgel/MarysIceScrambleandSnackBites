@@ -2,7 +2,7 @@
   <nav class="NavbarModal">
     <div class="logo">
       <img src="../images/logo-removebg-preview.png" alt="IceScramble" @click="Menu">
-      <RouterLink to="/Menu/Products"><h2>Mary's Ice Scramble and SnackBites</h2></RouterLink>
+      <RouterLink to="/Menu"><h2>Mary's Ice Scramble and SnackBites</h2></RouterLink>
     </div>
     <div class="actualnav">
       <ul>
@@ -30,7 +30,7 @@ const Menu = () => {
 
 </script>
 
-<style>
+<style scoped >
 
 a, a:visited {
   color: inherit; /* This ensures the link takes the same color as the parent */
@@ -43,7 +43,7 @@ a, a:visited {
   align-items: center;
   justify-content: space-between;
   padding: 0.5vw;
-  position: absolute;
+  position: fixed;
   width: 100%;
   max-width: 100vw;
 }
