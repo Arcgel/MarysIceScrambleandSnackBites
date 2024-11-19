@@ -1,21 +1,24 @@
 <template>
   <div class="containerProducts">
     <h1>PRODUCTS</h1>
-  <div class="Error" v-if="error">{{ error }}</div>
-  <div class="Products" v-if="products.length">
-    <div v-for="product in products" :key="product.id">
-      <div class="productShowcase">
-        <h2>{{ product.title }}</h2>
-        <span v-for="sizes in product.Sizez" :key="sizes">
-          <h5>{{ sizes }}</h5>
-        </span>
-        <span v-for="config in product.Setting" :key="config">
-          <h5>{{ config }}</h5>
-        </span>
+    <div class="Error" v-if="error">{{ error }}</div>
+    <div class="Products" v-if="products.length">
+      <div v-for="product in products" :key="product.id">
+        <div class="productShowcase">
+          <img src="../images/438a2e66-19fa-4724-a02f-182193770747-removebg-preview.png" alt="test">
+          <span v-for="sizes in product.Sizez" :key="sizes">
+            <h5>{{ sizes }}</h5>
+          </span>
+          <span v-for="config in product.Setting" :key="config">
+            <h5>{{ config }}</h5>
+          </span>
+        </div>
+        <div class="producttitle">
+          <h2>{{ product.title }}</h2>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="else" v-else>Loading...</div>
+    <div class="else" v-else>Loading...</div>
   </div>
 
 
@@ -26,16 +29,16 @@ import { ref } from 'vue'
 const products = ref([])
 const error = ref(null)
 
- const load = async () => {
-  try{
+const load = async () => {
+  try {
     let data = await fetch('http://localhost:3000/Scramble')
     console.log(data)
-    if(!data.ok){
+    if (!data.ok) {
       throw error('no data available')
     }
     products.value = await data.json()
   }
-  catch(err) {
+  catch (err) {
     error.value = err.message
     console.log(error.value)
   }
@@ -45,48 +48,71 @@ load()
 
 </script>
 
-<style >
-  .containerProducts{
-    box-sizing: border-box;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  .Products{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    gap: 1.6vh;
-  }
-  .productShowcase{
-    width: 17vw;
-    height: 40vh;
-    padding: 2vh;
-    border-radius: 1vw;
-    background-color: chocolate;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0.4vh 0.6vh rgba(0, 0, 0, 0.8);
-  }
-  .productShowcase:hover{
-    background-color: coral;
-  }
-  .productShowcase span{
-    display: inline-flex;
-  }
-  .productShowcase h1,h2,h3,h4,h5,h6 {
-    padding: 0;
-    margin: 0;
-  }
-  .ScrambleTitle{
-    display: flex;
-    align-items: start
-  }
+<style>
+.containerProducts {
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
+.Products {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: 1.6vh;
+}
+
+.productShowcase {
+  width: 17vw;
+  height: 40vh;
+  padding: 2vh;
+  border-radius: 1vw;
+  background-color: chocolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.4vh 0.6vh rgba(0, 0, 0, 0.8);
+}
+
+.producttitle h2{
+  padding: 0.6vw;
+}
+
+.productShowcase img {
+  width: 10vw;
+  height: 28vh;
+}
+
+.productShowcase:hover {
+  background-color: coral;
+}
+
+.productShowcase:hover span {
+  display: block;
+}
+
+.productShowcase span {
+  display: none;
+}
+
+.productShowcase h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  padding: 0;
+  margin: 0;
+}
+
+.ScrambleTitle {
+  display: flex;
+  align-items: start
+}
 </style>

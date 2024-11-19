@@ -44,7 +44,7 @@ a, a:visited {
   justify-content: space-between;
   padding: 0.5vw;
   position: fixed;
-  width: 100%;
+  width: 100vw;
   max-width: 100vw;
 }
 
@@ -57,7 +57,7 @@ a, a:visited {
 .logo img {
   height: 9.74025974025974vh;
   width: 4.418262150220913vw;
-  border-radius: 50%;
+  border-radius: 4vw;
   margin-left: 2vw;
 }
 
