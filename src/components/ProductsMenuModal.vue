@@ -28,7 +28,7 @@ const error = ref(null)
 
  const load = async () => {
   try{
-    let data = await fetch('http://localhost:3000/Products')
+    let data = await fetch('http://localhost:3000/Scramble')
     console.log(data)
     if(!data.ok){
       throw error('no data available')
@@ -54,11 +54,11 @@ load()
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 100px;
   }
   .Products{
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: space-between;
     gap: 1.6vh;
   }
@@ -71,11 +71,19 @@ load()
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     box-shadow: 0 0.4vh 0.6vh rgba(0, 0, 0, 0.8);
+  }
+  .productShowcase span{
+    display: inline-flex;
   }
   .productShowcase h1,h2,h3,h4,h5,h6 {
     padding: 0;
     margin: 0;
+  }
+  .ScrambleTitle{
+    display: flex;
+    align-items: start
   }
 
 </style>
