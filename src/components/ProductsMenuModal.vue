@@ -74,6 +74,9 @@ load()
     justify-content: center;
     box-shadow: 0 0.4vh 0.6vh rgba(0, 0, 0, 0.8);
   }
+  .productShowcase:hover{
+    background-color: coral;
+  }
   .productShowcase span{
     display: inline-flex;
   }
