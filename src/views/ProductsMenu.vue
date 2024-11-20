@@ -2,19 +2,21 @@
   <div class="containerProducts">
     <h1>PRODUCTS</h1>
     <div class="Error" v-if="error">{{ error }}</div>
+    <div class="ProductHeader">
+        <h2>Scramble:</h2>
+      </div>
     <div class="Products" v-if="products.length">
       <div v-for="product in products" :key="product.id">
         <div class="productShowcase">
-          <img src="../images/438a2e66-19fa-4724-a02f-182193770747-removebg-preview.png" alt="test">
-          <span v-for="sizes in product.Sizez" :key="sizes">
+          <h2>{{ product.title }}</h2>
+          <div class="text-design">
+            <span v-for="sizes in product.Sizez" :key="sizes">
             <h5>{{ sizes }}</h5>
           </span>
           <span v-for="config in product.Setting" :key="config">
             <h5>{{ config }}</h5>
           </span>
-        </div>
-        <div class="producttitle">
-          <h2>{{ product.title }}</h2>
+          </div>
         </div>
       </div>
     </div>
@@ -29,7 +31,8 @@ import { ref } from 'vue'
 const products = ref([])
 const error = ref(null)
 
-const load = async () => {
+
+const scramble = async () => {
   try {
     let data = await fetch('http://localhost:3000/Scramble')
     console.log(data)
@@ -44,32 +47,36 @@ const load = async () => {
   }
 }
 
-load()
+scramble()
 
 </script>
 
-<style>
+<style >
 .containerProducts {
-  box-sizing: border-box;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: rgba(252, 237, 240, 1);
 }
 
 .Products {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
   gap: 1.6vh;
+}
+
+.containerProducts .ProductHeader {
+  padding: 1.4vw;
 }
 
 .productShowcase {
   width: 17vw;
-  height: 40vh;
+  height: 37vh;
   padding: 2vh;
   border-radius: 1vw;
   background-color: chocolate;
@@ -93,8 +100,13 @@ load()
   background-color: coral;
 }
 
-.productShowcase:hover span {
-  display: block;
+.productShowcase:hover .text-design span{
+  display: inline-block;
+  margin-right:0.2vw;
+}
+
+.productShowcase span {
+  display: none;
 }
 
 .productShowcase span {
@@ -115,4 +127,6 @@ h6 {
   display: flex;
   align-items: start
 }
+
+
 </style>

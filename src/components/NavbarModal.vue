@@ -37,7 +37,7 @@ a, a:visited {
   text-decoration: none; /* Removes underline styling */
 }
 .NavbarModal {
-  background: rgba(252, 237, 240, 0.808);
+  background: rgba(252, 237, 240, 1);
   box-sizing: border-box;
   display: flex;
   align-items: center;
