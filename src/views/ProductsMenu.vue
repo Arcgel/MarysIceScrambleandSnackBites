@@ -3,19 +3,19 @@
     <h1>PRODUCTS</h1>
     <div class="Error" v-if="error">{{ error }}</div>
     <div class="ProductHeader">
-        <h2>Scramble:</h2>
-      </div>
+      <h2>Scramble:</h2>
+    </div>
     <div class="Products" v-if="products.length">
       <div v-for="product in products" :key="product.id">
         <div class="productShowcase">
           <h2>{{ product.title }}</h2>
           <div class="text-design">
             <span v-for="sizes in product.Sizez" :key="sizes">
-            <h5>{{ sizes }}</h5>
-          </span>
-          <span v-for="config in product.Setting" :key="config">
-            <h5>{{ config }}</h5>
-          </span>
+              <h5>{{ sizes }}</h5>
+            </span>
+            <span v-for="config in product.Setting" :key="config">
+              <h5>{{ config }}</h5>
+            </span>
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@ scramble()
 
 </script>
 
-<style >
+<style>
 .containerProducts {
   width: 100%;
   height: 100%;
@@ -87,7 +87,7 @@ scramble()
   box-shadow: 0 0.4vh 0.6vh rgba(0, 0, 0, 0.8);
 }
 
-.producttitle h2{
+.producttitle h2 {
   padding: 0.6vw;
 }
 
@@ -100,9 +100,9 @@ scramble()
   background-color: coral;
 }
 
-.productShowcase:hover .text-design span{
+.productShowcase:hover .text-design span {
   display: inline-block;
-  margin-right:0.2vw;
+  margin-right: 0.2vw;
 }
 
 .productShowcase span {
@@ -127,6 +127,30 @@ h6 {
   display: flex;
   align-items: start
 }
+</style>
 
+<style scoped>
+h1 {
+  font-size: 2vw;
+}
 
+h2 {
+  font-size: 1.75vw;
+}
+
+h3 {
+  font-size: 1.5vw;
+}
+
+h4 {
+  font-size: 1.25vw;
+}
+
+h5 {
+  font-size: 1vw;
+}
+
+h6 {
+  font-size: 0.875vw;
+}
 </style>
