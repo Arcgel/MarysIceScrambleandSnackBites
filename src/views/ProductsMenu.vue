@@ -4,7 +4,7 @@
     <h1>PRODUCTS</h1>
     <div class="Error" v-if="error">{{ error }}</div>
     <div class="ProductHeader">
-      <h2>Scramble:</h2>
+      <h2>Available Now:</h2>
     </div>
     <div class="Products" v-if="products.length">
       <div v-for="product in products" :key="product.id" @click="productdescription(product)">

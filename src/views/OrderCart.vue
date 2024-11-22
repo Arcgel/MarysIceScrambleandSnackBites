@@ -9,13 +9,19 @@ const loadCart = () => {
   cart.value = storedCart;
 };
 
-const removeFromCart = (title) => {
-  const item = cart.value.find(cartItem => cartItem.title === title)
+const removeFromCart = (title, config, size) => {
+  const item = cart.value.find(cartItem =>
+  cartItem.title === title &&
+  cartItem.config === config &&
+  cartItem.size === size)
+
   if (item) { if (item.quantity > 1)
     { item.quantity--;
     } else {
-    cart.value = cart.value.filter(cartItem => cartItem.title !== title);
-  } localStorage.setItem('cart', JSON.stringify(cart.value)); } };
+    cart.value = cart.value.filter(cartItem =>
+    !(cartItem.title === title && cartItem.config === config && cartItem.size === size));
+  }
+  localStorage.setItem('cart', JSON.stringify(cart.value)); } };
 
 onMounted(() => {
   loadCart();
@@ -27,14 +33,14 @@ onMounted(() => {
     <div v-if="cart.length">
       <div v-for="item in cart" :key="item.title" class="productplacement">
         <h2>{{ item.title }}</h2>
-        <p>Configuration: {{ item.config }}</p>
-        <p>Size: {{ item.size }}</p>
-        <p>Quantity: {{ item.quantity }}</p>
-        <button @click="removeFromCart(item.title)" class="remove"><img src="../images/trash.png" alt="Remove"></button>
+        <h4>Configuration: {{ item.config }}</h4>
+        <h4>Size: {{ item.size }}</h4>
+        <h4>Quantity: {{ item.quantity }}</h4>
+        <button @click="removeFromCart(item.title, item.config, item.size)" class="remove"><img src="../images/trash.png" alt="Remove"></button>
       </div>
     </div>
-    <div v-else>
-      <p>Your cart is empty.</p>
+    <div class="CartLoading" v-else>
+      <h1>Your cart is empty.</h1>
     </div>
   </div>
 </template>
@@ -44,10 +50,10 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 80%;
+  width: 70%;
   border-radius: 2vw;
   margin:  5vh auto;
-  padding: 6vh;
+  padding: 2vh 7vw;
   background-color: chocolate;
   color: antiquewhite;
   gap: 2vh;
@@ -57,5 +63,12 @@ onMounted(() => {
   height: 2vw;
   background: none  ;
   color: none;
+}
+.CartLoading{
+  height: 70vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

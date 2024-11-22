@@ -13,7 +13,7 @@
           <input class="orderquantity" type="number" v-model="quantity" min="1" placeholder="quantity" required>
         </div>
         <div class="productdesc">
-            {{ props.data.Description }}
+            <h4>{{ props.data.Description }}</h4>
           </div>
         <button type="submit" class="movingcart">Add to Cart</button>
       </div>
@@ -27,7 +27,7 @@ import { ref } from 'vue';
 
 const emit = defineEmits(['close', 'add-to-cart'])
 
-const SelectedConfig = ref('Normal')
+const SelectedConfig = ref('Overload')
 const SelectedSize = ref('12oz')
 const quantity = ref(1)
 
@@ -110,7 +110,7 @@ closeModal()
 .movingcart{
   width: 12vw;
   text-align: center;
-  margin: 4vh;
+  margin: 1vh;
   padding: 1.4vh;
   border-radius: 1.6vh;
   background: #fcc38e;
@@ -122,5 +122,9 @@ closeModal()
   border-radius: 0.5vw;
   background: #fcc38e;
   color: chocolate;
+}
+.productdesc{
+  padding: 2vw 5vw;
+  text-align: center;
 }
 </style>
