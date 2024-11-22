@@ -10,9 +10,12 @@ const loadCart = () => {
 };
 
 const removeFromCart = (title) => {
-  cart.value = cart.value.filter(item => item.title !== title);
-  localStorage.setItem('cart', JSON.stringify(cart.value));
-};
+  const item = cart.value.find(cartItem => cartItem.title === title)
+  if (item) { if (item.quantity > 1)
+    { item.quantity--;
+    } else {
+    cart.value = cart.value.filter(cartItem => cartItem.title !== title);
+  } localStorage.setItem('cart', JSON.stringify(cart.value)); } };
 
 onMounted(() => {
   loadCart();
@@ -22,12 +25,12 @@ onMounted(() => {
 <template>
   <div>
     <div v-if="cart.length">
-      <div v-for="item in cart" :key="item.title"  class="productplacement">
+      <div v-for="item in cart" :key="item.title" class="productplacement">
         <h2>{{ item.title }}</h2>
         <p>Configuration: {{ item.config }}</p>
         <p>Size: {{ item.size }}</p>
         <p>Quantity: {{ item.quantity }}</p>
-        <button @click="removeFromCart(item.title)">Remove</button>
+        <button @click="removeFromCart(item.title)" class="remove"><img src="../images/trash.png" alt="Remove"></button>
       </div>
     </div>
     <div v-else>
@@ -37,10 +40,21 @@ onMounted(() => {
 </template>
 
 <style>
-.productplacement{
+.productplacement {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  width: 100%;
+  width: 80%;
+  border-radius: 2vw;
+  margin: 0 auto;
+  padding: 1vw;
+  background-color: chocolate;
+  color: antiquewhite;
+}
+.remove img{
+  width: 2vw;
+  height: 2vw;
+  background: none  ;
+  color: none;
 }
 </style>
