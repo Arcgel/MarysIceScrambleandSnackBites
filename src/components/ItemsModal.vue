@@ -12,6 +12,9 @@
           </select>
           <input class="orderquantity" type="number" v-model="quantity" min="1" placeholder="quantity" required>
         </div>
+        <div class="productdesc">
+            {{ props.data.Description }}
+          </div>
         <button type="submit" class="movingcart">Add to Cart</button>
       </div>
     </form>

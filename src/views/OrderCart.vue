@@ -42,14 +42,15 @@ onMounted(() => {
 <style>
 .productplacement {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   width: 80%;
   border-radius: 2vw;
-  margin: 0 auto;
-  padding: 1vw;
+  margin:  5vh auto;
+  padding: 6vh;
   background-color: chocolate;
   color: antiquewhite;
+  gap: 2vh;
 }
 .remove img{
   width: 2vw;
