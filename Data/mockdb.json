@@ -1,10 +1,10 @@
 {
     "Scramble": [
-        { "title": "Strawberry", "id": 1, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"] },
-        { "title": "Chocolate", "id": 2, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"] },
-        { "title": "Ube", "id": 3, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"] },
-        { "title": "Mango", "id": 4, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"] },
-        { "title": "Pandan", "id": 5, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"] }
+        { "title": "Strawberry", "id": 1, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Strawberry.png" },
+        { "title": "Chocolate", "id": 2, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Chocolate.png"  },
+        { "title": "Ube", "id": 3, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Ube.png"  },
+        { "title": "Mango", "id": 4, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Mango.png"  },
+        { "title": "Pandan", "id": 5, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Pandan.png"  }
       ],
     "Fruit": [
       { "title": "Soda", "id": 7, "Sizez": ["16oz", "22oz"]},

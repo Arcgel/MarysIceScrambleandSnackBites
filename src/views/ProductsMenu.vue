@@ -10,7 +10,7 @@
       <div v-for="product in products" :key="product.id" @click="productdescription(product)">
         <div class="productShowcase">
           <div class="productimage">
-            <h2></h2>
+            <img :src="product.image" alt="Products">
           </div>
           <div class="prodshowtext">
             <div class="text-design">
@@ -95,8 +95,8 @@ const closeModal = () => {
 }
 
 .productShowcase {
-  width: 16vw;
-  height: 40vh;
+  width: 18vw;
+  height: 46vh;
   display: flex;
   flex-direction: column;
   align-items: center;
