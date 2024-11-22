@@ -6,13 +6,8 @@
     </div>
     <div class="actualnav">
       <ul>
-        <li><details>
-        <Summary>Cart</Summary>
-        <ul>
-          <RouterLink to="/"><li>SaveInformation</li></RouterLink>
-          <RouterLink to="/"><li>Checkout</li></RouterLink>
-        </ul></details></li>
-        <RouterLink to="/"><li>Order Now</li></RouterLink>
+        <RouterLink to="/Cart"><li>Cart</li></RouterLink>
+        <RouterLink to="/"><li>User Information</li></RouterLink>
       </ul>
     </div>
   </nav>

@@ -1,32 +1,40 @@
 <template>
   <div class="containerProducts">
+
     <h1>PRODUCTS</h1>
     <div class="Error" v-if="error">{{ error }}</div>
     <div class="ProductHeader">
       <h2>Scramble:</h2>
     </div>
     <div class="Products" v-if="products.length">
-      <div v-for="product in products" :key="product.id">
+      <div v-for="product in products" :key="product.id" @click="productdescription(product)">
         <div class="productShowcase">
-          <h2>{{ product.title }}</h2>
-          <div class="text-design">
-            <span v-for="sizes in product.Sizez" :key="sizes">
+          <div class="productimage">
+            <h2></h2>
+          </div>
+          <div class="prodshowtext">
+            <div class="text-design">
+              <h3>{{ product.title }}</h3>
+            <span v-for="sizes in product.Sizez" :key="sizes" class="prodsizes">
               <h5>{{ sizes }}</h5>
             </span>
-            <span v-for="config in product.Setting" :key="config">
+            <span v-for="config in product.Setting" :key="config" class="prodsetting">
               <h5>{{ config }}</h5>
             </span>
+          </div>
           </div>
         </div>
       </div>
     </div>
     <div class="else" v-else>Loading...</div>
+    <ItemsModal v-if="selectedproduct" :data="selectedproduct" @close="closeModal"/>
   </div>
 
 
 </template>
 
 <script setup>
+import ItemsModal from '../components/ItemsModal.vue';
 import { ref } from 'vue'
 const products = ref([])
 const error = ref(null)
@@ -46,8 +54,20 @@ const scramble = async () => {
     console.log(error.value)
   }
 }
-
 scramble()
+
+const selectedproduct = ref(null)
+const showModal = ref(false)
+
+const productdescription = (product) => {
+  selectedproduct.value = product;
+  showModal.value = true;
+}
+
+const closeModal = () => {
+  showModal.value = false
+  selectedproduct.value = null
+}
 
 </script>
 
@@ -75,16 +95,34 @@ scramble()
 }
 
 .productShowcase {
-  width: 17vw;
-  height: 37vh;
-  padding: 2vh;
-  border-radius: 1vw;
-  background-color: chocolate;
+  width: 16vw;
+  height: 40vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0.4vh 0.6vh rgba(0, 0, 0, 0.8);
+  /* box-shadow: 0 0.4vh 0.6vh rgba(0, 0, 0, 0.8); */
+}
+.productimage{
+  background-color: rgb(283, 147, 83);
+  width: 100%;
+  height: 75%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 1.5vw;
+  border-top-right-radius: 1.5vw;
+}
+
+.prodshowtext{
+  background-color: rgb(283, 118, 35);
+  width: 100%;
+  height: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 1vw;
+  border-bottom-right-radius: 1vw;
 }
 
 .producttitle h2 {
@@ -97,12 +135,16 @@ scramble()
 }
 
 .productShowcase:hover {
-  background-color: coral;
+  text-align: center;
 }
 
-.productShowcase:hover .text-design span {
+.productShowcase:hover .text-design .prodsizes{
   display: inline-block;
-  margin-right: 0.2vw;
+  margin-right: 0.5vw;
+}
+.productShowcase:hover .text-design .prodsetting{
+  display: inline-block;
+  margin-right: 0.5vw;
 }
 
 .productShowcase span {
