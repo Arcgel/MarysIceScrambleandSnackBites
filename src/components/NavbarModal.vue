@@ -28,8 +28,8 @@ const Menu = () => {
 <style scoped >
 
 a, a:visited {
-  color: inherit; /* This ensures the link takes the same color as the parent */
-  text-decoration: none; /* Removes underline styling */
+  color: inherit;
+  text-decoration: none;
 }
 .NavbarModal {
   background: rgba(252, 237, 240, 1);
