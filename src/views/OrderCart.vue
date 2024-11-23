@@ -52,11 +52,10 @@ onMounted(() => {
   align-items: center;
   width: 70%;
   border-radius: 2vw;
-  margin:  5vh auto;
-  padding: 2vh 7vw;
+  margin:  3vh auto;
+  padding: 3vh 7vw;
   background-color: chocolate;
   color: antiquewhite;
-  gap: 2vh;
 }
 .remove img{
   width: 2vw;
