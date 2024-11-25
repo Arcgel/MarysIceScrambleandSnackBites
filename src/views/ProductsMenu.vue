@@ -1,6 +1,5 @@
 <template>
   <div class="containerProducts">
-
     <h1>PRODUCTS</h1>
     <div class="Error" v-if="error">{{ error }}</div>
     <div class="ProductHeader">

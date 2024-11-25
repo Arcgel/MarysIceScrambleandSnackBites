@@ -1,6 +1,7 @@
 // Cart.vue
 <script setup>
 import { ref, onMounted } from 'vue';
+import OutsideInvoice from '../components/OutsideInvoice.vue';
 
 const cart = ref([]);
 
@@ -38,6 +39,7 @@ onMounted(() => {
         <h4>Quantity: {{ item.quantity }}</h4>
         <button @click="removeFromCart(item.title, item.config, item.size)" class="remove"><img src="../images/trash.png" alt="Remove"></button>
       </div>
+      <!-- <OutsideInvoice/> -->
     </div>
     <div class="CartLoading" v-else>
       <h1>Your cart is empty.</h1>

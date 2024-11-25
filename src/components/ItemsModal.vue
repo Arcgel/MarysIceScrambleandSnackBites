@@ -10,7 +10,7 @@
           <select v-model="SelectedSize" name="Sizes" id="NormalLarge">
             <option v-for="size in props.data.Sizez" :key="size" :value="size">{{ size }}</option>
           </select>
-          <input class="orderquantity" type="number" v-model="quantity" min="1" placeholder="quantity" required>
+          <input class="orderquantity" type="number" v-model="quantity" min="1" max="10" placeholder="quantity" required>
         </div>
         <div class="productdesc">
             <h4>{{ props.data.Description }}</h4>
@@ -27,7 +27,7 @@ import { ref } from 'vue';
 
 const emit = defineEmits(['close', 'add-to-cart'])
 
-const SelectedConfig = ref('Overload')
+const SelectedConfig = ref('Normal')
 const SelectedSize = ref('12oz')
 const quantity = ref(1)
 
