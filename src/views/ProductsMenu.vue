@@ -6,19 +6,24 @@
       <h2>Available Now:</h2>
     </div>
     <div class="Products" v-if="products.length">
-      <div v-for="product in products" :key="product.id" @click="productdescription(product)">
+      <div v-for="product in products" :key="product.id" class="Reactive" @click="productdescription(product)">
         <div class="productShowcase">
           <div class="productimage">
             <img :src="product.image" alt="Products">
           </div>
           <div class="prodshowtext">
             <div class="text-design">
-              <h3>{{ product.title }}</h3>
+              <div class="heart-icon" @click.passive="toggleFavorite(product)">
+                  <i :class="['fa-heart', isFavorite(product) ? 'fas' : 'far']"></i>
+              <div class="title-row">
+                <h3>{{ product.title }}</h3>
+              </div>
+            </div>
             <span v-for="sizes in product.Sizez" :key="sizes" class="prodsizes">
-              <h5>{{ sizes }}</h5>
+              <h5>{{ sizes.size }}</h5>
             </span>
             <span v-for="config in product.Setting" :key="config" class="prodsetting">
-              <h5>{{ config }}</h5>
+              <h5>{{ config.setting }}</h5>
             </span>
           </div>
           </div>
@@ -68,6 +73,24 @@ const closeModal = () => {
   selectedproduct.value = null
 }
 
+const toggleFavorite = (product) => {
+  let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  const index = favorites.findIndex(fav => fav.id === product.id);
+
+  if (index === -1) {
+    favorites.push(product);
+  } else {
+    favorites.splice(index, 1);
+  }
+
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+const isFavorite = (product) => {
+  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  return favorites.some(fav => fav.id === product.id);
+}
+
 </script>
 
 <style>
@@ -85,7 +108,7 @@ const closeModal = () => {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: center;
   gap: 1.6vh;
 }
 
@@ -96,6 +119,10 @@ const closeModal = () => {
 .productShowcase {
   width: 18vw;
   height: 46vh;
+  min-width: 14rem;
+  max-width: 25rem;
+  min-height: 17rem;
+  max-height: 18rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,8 +147,17 @@ const closeModal = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: row;
   border-bottom-left-radius: 1vw;
   border-bottom-right-radius: 1vw;
+}
+
+.prodshowtext .heart-icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1vw;
 }
 
 .producttitle h2 {
@@ -171,6 +207,7 @@ h6 {
 </style>
 
 <style scoped>
+
 h1 {
   font-size: 2vw;
 }
@@ -194,4 +231,45 @@ h5 {
 h6 {
   font-size: 0.875vw;
 }
+
+@media (max-width: 768px){
+
+  .productShowcase {
+  width: 20vw;
+  height: 48vh;
+  min-width: 19rem;
+  max-width: 25rem;
+  min-height: 22rem;
+  max-height: 20rem;
+  }
+
+  .productShowcase img {
+    width: 30vw;
+    height: 48vh;
+    object-fit: contain;
+  }
+
+  h1 { font-size: 6vw; }
+  h2 { font-size: 5vw; }
+  h3 { font-size: 6vw; }
+  h4 { font-size: 3.5vw; }
+  h5 { font-size: 3vw; }
+  h6 { font-size: 2.5vw; }
+
+  .prodshowtext {
+    border-radius: 0 0 2vw 2vw;
+
+    .heart-icon {
+    font-size: 5vw;
+  }
+  }
+}
+
+
+
+/* Add this to your existing media query */
+@media (max-width: 768px) {
+
+}
+
 </style>

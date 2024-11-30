@@ -46,9 +46,43 @@ const Menu = () => {
 }
 .moving{
   width: 12vw;
-  margin: 0 auto;
+  margin: 5vh auto auto auto;
   padding: 1.4vh;
   border-radius: 1.6vh;
   background: rgb(214, 90, 214);
+}
+@media only screen and (max-width: 768px) {
+  .Entrance {
+    width: 85vw;
+  }
+
+  .Entrance h1 {
+    font-size: 1.8rem;
+  }
+
+  .Entrance h3 {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .moving {
+    width: 120px;
+    padding: 10px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .Entrance {
+    width: 90vw;
+    padding: 1rem;
+  }
+
+  .Entrance h1 {
+    font-size: 1.5rem;
+  }
+
+  .moving {
+    width: 100px;
+  }
 }
 </style>

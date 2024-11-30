@@ -4,17 +4,22 @@
       <div class="contentvalues">
         <h1>{{ props.data.title }}</h1>
         <div class="ModalStyling">
-          <select v-model="SelectedConfig" name="Config" id="Configuration">
-            <option v-for="config in props.data.Setting" :key="config" :value="config">{{ config }}</option>
+          <select v-model="SelectedConfig" name="Config" id="Configuration" required>
+            <option v-for="config in props.data.Setting" :key="config.setting" :value="config" >
+              {{ config.setting }}
+            </option>
           </select>
-          <select v-model="SelectedSize" name="Sizes" id="NormalLarge">
-            <option v-for="size in props.data.Sizez" :key="size" :value="size">{{ size }}</option>
+          <select v-model="SelectedSize" name="Sizes" id="NormalLarge" required>
+            <option v-for="size in props.data.Sizez" :key="size.size" :value="size" >
+              {{ size.size }}
+            </option>
           </select>
           <input class="orderquantity" type="number" v-model="quantity" min="1" max="10" placeholder="quantity" required>
         </div>
         <div class="productdesc">
-            <h4>{{ props.data.Description }}</h4>
-          </div>
+          <h4>{{ props.data.Description }}</h4>
+        </div>
+        <h3>Total Price: ₱ {{ totalPrice }}</h3>
         <button type="submit" class="movingcart">Add to Cart</button>
       </div>
     </form>
@@ -22,13 +27,13 @@
 </template>
 
 <script setup>
-import { defineEmits } from 'vue'
-import { ref } from 'vue';
+import { defineEmits} from 'vue'
+import { ref, computed } from 'vue';
 
 const emit = defineEmits(['close', 'add-to-cart'])
 
-const SelectedConfig = ref('Normal')
-const SelectedSize = ref('12oz')
+const SelectedConfig = ref({})
+const SelectedSize = ref({})
 const quantity = ref(1)
 
 const props = defineProps({
@@ -43,29 +48,36 @@ const closeModal = () => {
 }
 
 const CartSubmit = () => {
-  const orderedproduct = {
+  const orderedProduct = {
     title: props.data.title,
-    config: SelectedConfig.value,
-    size: SelectedSize.value,
-    quantity: quantity.value
+    config: SelectedConfig.value.setting,
+    configprice: SelectedConfig.value.price,
+    size: SelectedSize.value.size,
+    configsize: SelectedSize.value.price,
+    quantity: quantity.value,
   }
-let cart = JSON.parse(localStorage.getItem('cart')) || []
-const existingproduct = cart.find(cartItem =>
-  cartItem.title === orderedproduct.title &&
-  cartItem.config === orderedproduct.config &&
-  cartItem.size === orderedproduct.size
-)
-if (existingproduct){
-  existingproduct.quantity += orderedproduct.quantity
-}else{
-  cart.push(orderedproduct)
-}
-localStorage.setItem('cart',JSON.stringify(cart))
 
-emit('add-to-cart', orderedproduct)
-closeModal()
+  let cart = JSON.parse(localStorage.getItem('cart')) || []
+  const existingProduct = cart.find(cartItem =>
+    cartItem.title === orderedProduct.title &&
+    cartItem.config === orderedProduct.config &&
+    cartItem.size === orderedProduct.size
+  )
+
+  if (existingProduct) {
+    existingProduct.quantity += orderedProduct.quantity
+  } else {
+    cart.push(orderedProduct)
+  }
+
+  localStorage.setItem('cart', JSON.stringify(cart))
+  emit('add-to-cart', orderedProduct)
+  closeModal()
 }
 
+const totalPrice = computed(() => {
+  return (Number(SelectedSize.value.price || 0) + Number(SelectedConfig.value.price || 0)) * quantity.value
+})
 </script>
 
 <style>
@@ -96,7 +108,7 @@ closeModal()
   width: 100%;
   display: flex;
   justify-content: center;
-  gap: 1vw
+  gap: 1vw;
 }
 
 .ModalStyling #Configuration,
@@ -107,7 +119,8 @@ closeModal()
   background-color: #fcc38e;
   border-radius: 0.5vw;
 }
-.movingcart{
+
+.movingcart {
   width: 12vw;
   text-align: center;
   margin: 1vh;
@@ -115,6 +128,7 @@ closeModal()
   border-radius: 1.6vh;
   background: #fcc38e;
 }
+
 .orderquantity {
   width: 3vw;
   padding: 0.8vw;
@@ -123,8 +137,64 @@ closeModal()
   background: #fcc38e;
   color: chocolate;
 }
-.productdesc{
+
+.productdesc {
   padding: 2vw 5vw;
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .contentvalues {
+    width: 90vw;
+    height: 70vh;
+    border-radius: 5vw;
+  }
+
+  .ModalStyling {
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0 4vw;
+  }
+
+  .ModalStyling #Configuration,
+  #NormalLarge {
+    min-width: 20%;
+    padding: 2vh;
+    font-size: 4vw;
+    border-radius: 2vw;
+  }
+
+  .orderquantity {
+    width: 10vw;
+    padding: 2vh;
+    font-size: 4vw;
+    border-radius: 2vw;
+  }
+
+  .movingcart {
+    width: 50vw;
+    padding: 2vh;
+    margin: 2vh;
+    font-size: 4vw;
+    border-radius: 2vw;
+  }
+
+  .productdesc {
+    padding: 4vh 6vw;
+  }
+
+  .productdesc h4 {
+    font-size: 5vw;
+  }
+
+  .contentvalues h1 {
+    font-size: 6vw;
+    margin-bottom: 3vh;
+  }
+
+  .contentvalues h3 {
+    font-size: 5vw;
+    margin: 2vh 0;
+  }
 }
 </style>

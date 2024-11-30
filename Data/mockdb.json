@@ -1,14 +1,14 @@
 {
     "Product": [
-        { "title": "Strawberry", "id": 1, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Strawberry.png"
+        { "title": "Strawberry", "id": 1, "Sizez": [ { "size": "12oz", "price": 35 }, { "size": "16oz", "price": 50 } ], "Setting": [ { "setting": "Normal", "price": 0 }, { "setting": "Overload", "price": 10 } ], "image": "/src/images/Strawberry.png"
       ,"Description": "Have a taste of the origin of the ice scramble popularizing it worldwid and can now be experienced in our humble little shop" },
-        { "title": "Chocolate", "id": 2, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Chocolate.png"  
+        { "title": "Chocolate", "id": 2, "Sizez": [ { "size": "12oz", "price": 40 }, { "size": "16oz", "price": 55 } ], "Setting": [ { "setting": "Normal", "price": 0 }, { "setting": "Overload", "price": 10 } ], "image": "/src/images/Chocolate.png"  
       ,"Description":"Experienced the chocolatey goodness ozzing in and out of your body as the cold alleviate the heat of summer day: can now be experienced in our humble little shop"},
-        { "title": "Ube", "id": 3, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Ube.png"  
+        { "title": "Ube", "id": 3, "Sizez": [ { "size": "12oz", "price": 35 }, { "size": "16oz", "price": 50 } ], "Setting": [ { "setting": "Normal", "price": 0 }, { "setting": "Overload", "price": 10 } ], "image": "/src/images/Ube.png"  
       ,"Description":"Experienced the filipno sweet classic in a cold and cheery tone in the hot summer day as it creaminess ozzes out of every ice shaved: can now be experienced in our humble little shop"},
-        { "title": "Mango", "id": 4, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Mango.png"  
+        { "title": "Mango", "id": 4, "Sizez": [ { "size": "12oz", "price": 35 }, { "size": "16oz", "price": 50 } ], "Setting": [ { "setting": "Normal", "price": 0 }, { "setting": "Overload", "price": 10 } ], "image": "/src/images/Mango.png"  
       ,"Description": "The freshiness of the fruit mango will penetrates the summer heat, heck even its sourness is also encaptured in the blazing hot scene for some needed refreshement: can now be experienced in our humble little shop"},
-        { "title": "Pandan", "id": 5, "Sizez": ["12oz", "16oz"], "Setting" : ["Normal", "Overload"], "image": "/src/images/Pandan.png"  
+        { "title": "Pandan", "id": 5, "Sizez": [ { "size": "12oz", "price": 35 }, { "size": "16oz", "price": 50 } ], "Setting": [ { "setting": "Normal", "price": 0 }, { "setting": "Overload", "price": 10 } ], "image": "/src/images/Pandan.png"  
       ,"Description": "The creaminess and the sweet nature feel of the pandan can be felt through the cool breeze of summer as you sit in the side of the calming place: can now be experienced in our humble little shop"}
       ],
     "Snacks": [
