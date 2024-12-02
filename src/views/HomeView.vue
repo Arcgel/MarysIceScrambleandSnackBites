@@ -25,7 +25,7 @@ const Menu = () => {
 .EntMain{
   width: 100%;
   height: 100vh;
-  background-image: url(../images/1089637.png) ;
+  background-image: url(../images/1089637.png);
   background-size: cover;
   background-repeat: no-repeat;
 
@@ -37,18 +37,18 @@ const Menu = () => {
 
 }
 .Entrance {
-  width: 53vw;
+  width: 724px;
   background: transparent;
-  padding: 2rem;
-  border-radius: 1.25rem;
+  padding: 32px;
+  border-radius: 20px;
   text-align: center;
 
 }
 .moving{
-  width: 12vw;
-  margin: 5vh auto auto auto;
-  padding: 1.4vh;
-  border-radius: 1.6vh;
+  width: 164px;
+  margin: 38px auto auto auto;
+  padding: 11px;
+  border-radius: 12px;
   background: rgb(214, 90, 214);
 }
 @media only screen and (max-width: 768px) {

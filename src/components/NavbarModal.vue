@@ -13,7 +13,7 @@
       <ul>
         <RouterLink to="/Menu" @click="toggleMenu"><li>Product Menu</li></RouterLink>
         <RouterLink to="/Cart" @click="toggleMenu"><li>Cart</li></RouterLink>
-        <RouterLink to="/" @click="toggleMenu"><li>User Information</li></RouterLink>
+        <RouterLink to="/User" @click="toggleMenu"><li>User Information</li></RouterLink>
       </ul>
     </div>
   </nav>
@@ -47,7 +47,7 @@ a, a:visited {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5vw;
+  padding: 7px;
   position: fixed;
   width: 100vw;
 }
@@ -55,28 +55,28 @@ a, a:visited {
 .logo {
   display: flex;
   align-items: center;
-  gap: 2vw;
+  gap: 27px;
 }
 
 .logo img {
-  height: 9.74025974025974vh;
-  width: 4.418262150220913vw;
-  border-radius: 4vw;
-  margin-left: 2vw;
+  height: 75px;
+  width: 60px;
+  border-radius: 55px;
+  margin-left: 27px;
 }
 
 .logo h2 {
-  font-size: 1.4vw;
-  letter-spacing: 0.2vw;
+  font-size: 19px;
+  letter-spacing: 3px;
   margin: 0;
 }
 
 .actualnav ul {
   list-style: none;
   display: flex;
-  gap: 3vw;
-  margin-right: 10vw;
-  font-size: 1.4vw;
+  gap: 41px;
+  margin-right: 137px;
+  font-size: 19px;
   color: brown;
 }
 
@@ -87,10 +87,10 @@ a, a:visited {
 
 .menu-btn span {
   display: block;
-  width: 3vw;
-  height: 0.5vh;
+  width: 41px;
+  height: 4px;
   background-color: brown;
-  margin: 1vh 0;
+  margin: 8px 0;
 }
 
 @media (max-width: 768px) {

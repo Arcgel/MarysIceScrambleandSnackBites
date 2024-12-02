@@ -109,20 +109,20 @@ const isFavorite = (product) => {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.6vh;
+  gap: 12px;
 }
 
 .containerProducts .ProductHeader {
-  padding: 1.4vw;
+  padding: 19px;
 }
 
 .productShowcase {
-  width: 18vw;
-  height: 46vh;
-  min-width: 14rem;
-  max-width: 25rem;
-  min-height: 17rem;
-  max-height: 18rem;
+  width: 246px;
+  height: 353px;
+  min-width: 224px;
+  max-width: 400px;
+  min-height: 272px;
+  max-height: 288px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -136,8 +136,8 @@ const isFavorite = (product) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top-left-radius: 1.5vw;
-  border-top-right-radius: 1.5vw;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
 .prodshowtext{
@@ -148,8 +148,8 @@ const isFavorite = (product) => {
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  border-bottom-left-radius: 1vw;
-  border-bottom-right-radius: 1vw;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
 }
 
 .prodshowtext .heart-icon {
@@ -157,16 +157,16 @@ const isFavorite = (product) => {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 1vw;
+  gap: 14px;
 }
 
 .producttitle h2 {
-  padding: 0.6vw;
+  padding: 8px;
 }
 
 .productShowcase img {
-  width: 10vw;
-  height: 28vh;
+  width: 135px;
+  height: 170px;
 }
 
 .productShowcase:hover {
@@ -209,27 +209,27 @@ h6 {
 <style scoped>
 
 h1 {
-  font-size: 2vw;
+  font-size: 27px;
 }
 
 h2 {
-  font-size: 1.75vw;
+  font-size: 24px;
 }
 
 h3 {
-  font-size: 1.5vw;
+  font-size: 20px;
 }
 
 h4 {
-  font-size: 1.25vw;
+  font-size: 17px;
 }
 
 h5 {
-  font-size: 1vw;
+  font-size: 14px;
 }
 
 h6 {
-  font-size: 0.875vw;
+  font-size: 12px;
 }
 
 @media (max-width: 768px){
