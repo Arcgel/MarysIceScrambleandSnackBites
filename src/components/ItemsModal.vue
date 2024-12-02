@@ -27,9 +27,9 @@
           <div class="ItemQuantity">
             <h3>Quantity: </h3>
             <div class="quantity-controls">
-              <button type="button" @click="decreaseQuantity" :disabled="quantity <= 1"><</button>
+              <button type="button" @click="decreaseQuantity" :disabled="quantity <= 1">-</button>
               <input type="number" class="quantityinput" v-model="quantity" min="1" max="10" readonly />
-              <button type="button" @click="increaseQuantity" :disabled="quantity >= 10">></button>
+              <button type="button" @click="increaseQuantity" :disabled="quantity >= 10">+</button>
             </div>
           </div>
           <div class="ItemPrice">

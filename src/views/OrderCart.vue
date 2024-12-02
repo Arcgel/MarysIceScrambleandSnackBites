@@ -86,7 +86,9 @@ const calculateTotalCartPrice = () => {
 
 const handleCheckout = () => {
   const order = [...cart.value];
-  previousOrders.value.push(order);
+  const oldorder = JSON.parse(localStorage.getItem('previousOrders')) || []
+  previousOrders.value = oldorder
+  oldorder.push(order)
   localStorage.setItem('previousOrders', JSON.stringify(previousOrders.value));
   cart.value = [];
   localStorage.setItem('cart', JSON.stringify(cart.value));
