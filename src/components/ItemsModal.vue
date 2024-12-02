@@ -25,7 +25,9 @@
             </select>
           </div>
           <div class="ItemQuantity">
-            <h3>Quantity: </h3>
+            <div class="quantitytext">
+              <h3>Quantity: </h3>
+            </div>
             <div class="quantity-controls">
               <button type="button" @click="decreaseQuantity" :disabled="quantity <= 1">-</button>
               <input type="number" class="quantityinput" v-model="quantity" min="1" max="10" readonly />
@@ -34,7 +36,7 @@
           </div>
           <div class="ItemPrice">
             <h3>Total Price:</h3>
-            <h3>{{ totalPrice  }}</h3>
+            <h3> ₱ {{ totalPrice  }}</h3>
           </div>
           <button type="submit" class="movingcart">Add to Cart</button>
         </div>
@@ -129,6 +131,7 @@ const totalPrice = computed(() => {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  top: 0;
 }
 
 .productdesc {
@@ -178,13 +181,6 @@ const totalPrice = computed(() => {
   box-sizing: border-box;
 }
 
-.ItemQuantity{
-
-background-color: #fcc38e;
-border-radius: 0.5vw;
-padding: 3vh;
-}
-
 .ItemPrice{
   background-color: #fcc38e;
   border-radius: 0.5vw;
@@ -194,11 +190,21 @@ padding: 3vh;
   padding: 2vw;
 }
 
+.ItemQuantity{
+background-color: #fcc38e;
+border-radius: 0.5vw;
+}
+
+.quantitytext{
+  padding: 1vw 2vw;
+}
+
 .quantity-controls {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1vh;
+  padding-bottom: 1vw;
 }
 
 .quantityinput{
