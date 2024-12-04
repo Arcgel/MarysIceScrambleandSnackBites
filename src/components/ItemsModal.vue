@@ -123,6 +123,7 @@ const totalPrice = computed(() => {
   align-items: center;
   justify-content: center;
   position: fixed;
+  z-index: 21;
 }
 
 .contentvalues {

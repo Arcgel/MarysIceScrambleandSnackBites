@@ -8,16 +8,28 @@
         </option>
       </select>
     </div>
-    <details v-if="selectedOrder">
-      <summary>Order Details</summary>
-      <div v-for="item in selectedOrder" :key="item.title" class="order-item">
-        <h4>{{ item.title }}</h4>
-        <p>Config: {{ item.config }}</p>
-        <p>Size: {{ item.size }}</p>
-        <p>Quantity: {{ item.quantity }}</p>
-        <p>Price: ₱ {{ item.price }}</p>
-      </div>
-    </details>
+    <div v-if="selectedOrder" class="order-details">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Config</th>
+            <th>Size</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in selectedOrder" :key="item.title">
+            <td>{{ item.title }}</td>
+            <td>{{ item.config }}</td>
+            <td>{{ item.size }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₱ {{ item.price }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div class="button-history" v-if="selectedOrder">
       <button class="reorder" @click="reorderSelected">Order Again</button>
     </div>
@@ -63,8 +75,6 @@ const reorderSelected = () => {
   }
 };
 
-
-
 onMounted(() => {
   loadPreviousOrders();
 });
@@ -72,18 +82,17 @@ onMounted(() => {
 
 <style>
 .summary {
+  height: 100%;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2vh;
-  background-color: rgb(283, 147, 83);
-  width: 70%;
-  margin: 0 auto;
-  padding: 5vw 2vh;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 5vh 2vw;
 }
 
-.orderchoice{
+.orderchoice {
   padding: 2vh 8vw;
   border-radius: 3vh;
   border: none;
@@ -94,27 +103,40 @@ onMounted(() => {
   margin-bottom: 20px;
 }
 
-.order-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: 0.3vw;
-  gap: 2vw;
+.order-details {
+  width: 100%;
+  overflow-x: auto;
 }
 
-.reorder{
-  background-color: #fcc38e;
-  padding: 0.4vw;
-  border-radius: 0.4vw;
+.order-details table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
 
+.order-details th, .order-details td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.order-details th {
+  background-color: #fcc38e;
+}
+
+.order-details td {
+  background-color: #fff;
+}
+
+.reorder {
+  background-color: #fcc38e;
+  padding: 0.4vw 1.6vw;
+  border-radius: 0.4vw;
+  border: none;
+  cursor: pointer;
 }
 
 .button-history {
   margin-top: 10px;
-  padding: 10px;
-  color: #fcc38e;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 </style>

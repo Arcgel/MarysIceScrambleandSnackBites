@@ -11,9 +11,9 @@
     </div>
     <div class="actualnav" :class="{ 'active': isMenuOpen }">
       <ul>
-        <RouterLink to="/Menu" @click="toggleMenu"><li>Product Menu</li></RouterLink>
+        <RouterLink to="/Menu" @click="toggleMenu"><li>Menu</li></RouterLink>
         <RouterLink to="/Cart" @click="toggleMenu"><li>Cart</li></RouterLink>
-        <RouterLink to="/User" @click="toggleMenu"><li>User Information</li></RouterLink>
+        <RouterLink to="/User" @click="toggleMenu"><li>User</li></RouterLink>
       </ul>
     </div>
   </nav>
@@ -49,7 +49,10 @@ a, a:visited {
   justify-content: space-between;
   padding: 7px;
   position: fixed;
+  z-index: 20;
   width: 100vw;
+  height: 13vh  ;
+  box-sizing: border-box;
 }
 
 .logo {
@@ -60,7 +63,7 @@ a, a:visited {
 
 .logo img {
   height: 75px;
-  width: 60px;
+  width: 75px;
   border-radius: 55px;
   margin-left: 27px;
 }

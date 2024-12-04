@@ -82,15 +82,17 @@ const printpdf = () => {
   top: 0;
   left: 0;
   color: black;
+  overflow-y: scroll;
+  z-index: 22;
 }
 
 .recieptinvoice {
   width: 90vw;
   max-width: 500px;
-  max-height: 700px;
   background-color: antiquewhite;
   padding: 2vw;
   border-radius: 1vh;
+  align-self: self-start;
 }
 
 .invoice-header {
