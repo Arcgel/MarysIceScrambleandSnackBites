@@ -5,13 +5,13 @@
         <div class="productdesc">
           <img :src="props.data.image" :alt="props.data.title" />
           <h1>{{ props.data.title }}</h1>
-          <h4>{{ props.data.Description }}</h4>
+          <h4>{{ props.data.description }}</h4>
         </div>
         <div class="modal-styling">
           <div class="ItemConfig">
             <h3>Setting: </h3>
             <select v-model="SelectedConfig" name="Config" id="Configuration" required>
-              <option v-for="config in props.data.Setting" :key="config.setting" :value="config">
+              <option v-for="config in props.data.setting" :key="config.setting" :value="config">
                 {{ config.setting }}
               </option>
             </select>
@@ -19,7 +19,7 @@
           <div class="ItemSize">
             <h3>Size: </h3>
             <select v-model="SelectedSize" name="Sizes" id="NormalLarge" required>
-              <option v-for="size in props.data.Sizez" :key="size.size" :value="size">
+              <option v-for="size in props.data.sizez" :key="size.size" :value="size">
                 {{ size.size }}
               </option>
             </select>

@@ -46,8 +46,7 @@ const error = ref(null)
 
 const scramble = async () => {
   try {
-    let data = await fetch('http://localhost:3000/Product')
-    console.log(data)
+    let data = await fetch('http://localhost:4000/products')
     if (!data.ok) {
       throw error('no data available')
     }
