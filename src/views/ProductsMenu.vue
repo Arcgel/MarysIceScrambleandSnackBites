@@ -19,10 +19,10 @@
                 <h3>{{ product.title }}</h3>
               </div>
             </div>
-            <span v-for="sizes in product.Sizez" :key="sizes" class="prodsizes">
+            <span v-for="sizes in product.sizes" :key="sizes" class="prodsizes">
               <h5>{{ sizes.size }}</h5>
             </span>
-            <span v-for="config in product.Setting" :key="config" class="prodsetting">
+            <span v-for="config in product.setting" :key="config" class="prodsetting">
               <h5>{{ config.setting }}</h5>
             </span>
           </div>
@@ -46,7 +46,7 @@ const error = ref(null)
 
 const scramble = async () => {
   try {
-    let data = await fetch('http://localhost:4000/products')
+    let data = await fetch('http://localhost:3000/products')
     if (!data.ok) {
       throw error('no data available')
     }

@@ -19,7 +19,7 @@
           <div class="ItemSize">
             <h3>Size: </h3>
             <select v-model="SelectedSize" name="Sizes" id="NormalLarge" required>
-              <option v-for="size in props.data.sizez" :key="size.size" :value="size">
+              <option v-for="size in props.data.sizes" :key="size.size" :value="size">
                 {{ size.size }}
               </option>
             </select>
@@ -36,7 +36,7 @@
           </div>
           <div class="ItemPrice">
             <h3>Total Price:</h3>
-            <h3> ₱ {{ totalPrice  }}</h3>
+            <h3> ₱ {{ totalPrice }}</h3>
           </div>
           <button type="submit" class="movingcart">Add to Cart</button>
         </div>
@@ -47,11 +47,14 @@
 
 <script setup>
 import { defineEmits, ref, computed, defineProps } from 'vue';
+import axios from 'axios';
 
 const emit = defineEmits(['close', 'add-to-cart']);
 const SelectedConfig = ref({});
 const SelectedSize = ref({});
 const quantity = ref(1);
+const isLoggedIn = ref(false); // This should be set based on your authentication logic
+const userId = ref(null); // This should be set to the logged-in user's ID
 
 const props = defineProps({
   data: {
@@ -64,31 +67,49 @@ const closeModal = () => {
   emit('close');
 };
 
-const CartSubmit = () => {
+const CartSubmit = async () => {
   const orderedProduct = {
+    product_id: props.data.id,
     title: props.data.title,
     config: SelectedConfig.value.setting,
     configprice: SelectedConfig.value.price,
     size: SelectedSize.value.size,
-    configsize: SelectedSize.value.price,
+    sizeprice: SelectedSize.value.price,
     quantity: quantity.value,
   };
 
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const existingProduct = cart.find(
-    (cartItem) =>
-      cartItem.title === orderedProduct.title &&
-      cartItem.config === orderedProduct.config &&
-      cartItem.size === orderedProduct.size
-  );
-
-  if (existingProduct) {
-    existingProduct.quantity += orderedProduct.quantity;
+  if (isLoggedIn.value && userId.value) {
+    // If the user is logged in, add the item to the cart via the backend
+    try {
+      await axios.post('http://localhost:3000/add-to-cart', {
+        userId: userId.value,
+        productId: orderedProduct.product_id,
+        config: orderedProduct.config,
+        size: orderedProduct.size,
+        quantity: orderedProduct.quantity,
+      });
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    }
   } else {
-    cart.push(orderedProduct);
+    // Otherwise, add the item to the cart in local storage
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existingProduct = cart.find(
+      (cartItem) =>
+        cartItem.product_id === orderedProduct.product_id &&
+        cartItem.config === orderedProduct.config &&
+        cartItem.size === orderedProduct.size
+    );
+
+    if (existingProduct) {
+      existingProduct.quantity += orderedProduct.quantity;
+    } else {
+      cart.push(orderedProduct);
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
   }
 
-  localStorage.setItem('cart', JSON.stringify(cart));
   emit('add-to-cart', orderedProduct);
   closeModal();
 };
@@ -113,6 +134,7 @@ const totalPrice = computed(() => {
   );
 });
 </script>
+
 
 <style>
 .floatingvalues {
