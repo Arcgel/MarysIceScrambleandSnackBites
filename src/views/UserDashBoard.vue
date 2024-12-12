@@ -23,28 +23,55 @@
       </div>
     </div>
     <div class="UserContent">
-      <UserComponent v-if="componentrendering == 'user'" />
+      <div v-if="componentrendering == 'user'">
+        <div v-if="loggedin"><UserSettings/></div>
+        <div v-else><UserComponent/></div>
+      </div>
       <PreviousPurchase v-if="componentrendering == 'history'" />
       <FavoriteComponent v-if="componentrendering == 'fave'"  />
       <ContactComponent v-if="componentrendering == 'support'" />
     </div>
-
   </div>
-
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
 import PreviousPurchase from '../components/PreviousPurchase.vue';
-import UserComponent from '../components/UserComponent.vue';
+import UserComponent from '../components/UserRegsiterandLogin.vue';
 import ContactComponent from '../components/ContactComponent.vue';
-import FavoriteComponent from '../components/favoriteComponent.vue';
+import FavoriteComponent from '../components/FavoriteComponent.vue';
+import UserSettings from '../components/UserSettings.vue';
 
-const componentrendering = ref('user')
+const componentrendering = ref('user');
+const loggedin = ref(false);
 
 const selecttiverendering = (component) => {
-  componentrendering.value = component
-}
+  componentrendering.value = component;
+};
+
+const CheckStatus = async () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      const response = await axios.get('http://localhost:3000/verify-token', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.status === 200) {
+        loggedin.value = true;
+      }
+    } catch (error) {
+      console.error('Error verifying token:', error);
+      loggedin.value = false;
+    }
+  }
+};
+
+onMounted(() => {
+  CheckStatus();
+});
 </script>
 
 <style>
@@ -57,7 +84,7 @@ const selecttiverendering = (component) => {
   gap: 1.3vw;
 }
 
-.UserNav{
+.UserNav {
   display: flex;
   flex-direction: column;
   gap: 3vh;

@@ -3,7 +3,7 @@
     <div class="shopping-cart">
       <h2>Shopping Cart</h2>
       <h3>{{ cart.length }} Items</h3>
-      <div class="cart-item" v-for="item in cart" :key="item.title">
+      <div class="cart-item" v-for="item in cart" :key="item.product_id">
         <div class="item-details">
           <p>{{ item.title }}</p>
           <p>Configuration: {{ item.config }}</p>
@@ -15,7 +15,7 @@
         <div class="item-price">
           <p>₱ {{ calculateTotalPrice(item) }}</p>
         </div>
-        <button @click="removeFromCart(item.title, item.config, item.size)" class="remove">
+        <button @click="removeFromCart(item)" class="remove">
           <img src="../images/trash.png" alt="Remove">
         </button>
       </div>
@@ -27,78 +27,192 @@
       <p>Total Items Cost: ₱ {{ calculateTotalCartPrice() }}</p>
       <p>Shipping: Pickup</p>
       <p>Total Cost: ₱ {{ calculateTotalCartPrice() + 50 }}</p>
-      <button class="Checkout" @click="openModal">Checkout</button>
+      <button class="Checkout" @click="triggerCheckout">Checkout</button>
+      <OutsideInvoice v-if="showInvoice" :cart="cart" @close="closeInvoice" @checkout="processCheckout" />
     </div>
-    <OutsideInvoice v-if="showModal" :cart="cart" @close="closeModal" @checkout="handleCheckout"/>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import axios from 'axios';
 import OutsideInvoice from '../components/OutsideInvoice.vue';
 
 const cart = ref([]);
-const showModal = ref(false);
-const previousOrders = ref([]);
+const isLoggedIn = ref(false);
+const userId = ref(null);
+const products = ref({});
+const showInvoice = ref(false);
 
-const openModal = () => {
-  showModal.value = true;
-}
-
-const closeModal = () => {
-  showModal.value = false;
-}
-
-const loadCart = () => {
-  const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
-  cart.value = storedCart;
+const fetchProductDetails = async () => {
+  try {
+    const response = await axios.get('http://localhost:3000/products');
+    products.value = response.data.reduce((acc, product) => {
+      acc[product.id] = product;
+      return acc;
+    }, {});
+    console.log("Fetched product details:", products.value); // Log fetched product details for debugging
+  } catch (error) {
+    console.error('Error fetching product details:', error);
+  }
 };
 
-const removeFromCart = (title, config, size) => {
-  const item = cart.value.find(cartItem =>
-    cartItem.title === title &&
-    cartItem.config === config &&
-    cartItem.size === size
+const syncCartWithBackend = async () => {
+  if (isLoggedIn.value && userId.value) {
+    console.log("Syncing local storage cart with backend...");
+    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const token = localStorage.getItem('token');
+    for (const item of storedCart) {
+      try {
+        const response = await axios.post('http://localhost:3000/add-to-cart', {
+          userId: userId.value,
+          productId: item.product_id,
+          config: item.config,
+          size: item.size,
+          quantity: item.quantity,
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log("Item synced:", response.data); // Log response for debugging
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      }
+    }
+    localStorage.removeItem('cart'); // Clear local storage after syncing
+  }
+};
+
+const loadCart = async () => {
+  if (isLoggedIn.value && userId.value) {
+    const token = localStorage.getItem('token');
+    try {
+      // Load cart from backend
+      const response = await axios.get(`http://localhost:3000/cart/${userId.value}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      cart.value = response.data.map(item => {
+        const product = products.value[item.product_id];
+        return {
+          ...item,
+          title: product ? product.title : 'Unknown Product',
+        };
+      });
+      console.log("Loaded cart from backend:", cart.value); // Log the loaded cart for debugging
+    } catch (error) {
+      console.error('Error loading cart from backend:', error); // Log error for debugging
+    }
+  } else {
+    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.value = storedCart.map(item => {
+      const product = products.value[item.product_id];
+      return {
+        ...item,
+        title: product ? product.title : 'Unknown Product',
+      };
+    });
+    console.log("Loaded cart from local storage:", cart.value); // Log the loaded cart for debugging
+  }
+};
+
+const removeFromCart = async (item) => {
+  const index = cart.value.findIndex(cartItem =>
+    cartItem.product_id === item.product_id &&
+    cartItem.config === item.config &&
+    cartItem.size === item.size
   );
 
-  if (item) {
-    if (item.quantity > 1) {
-      item.quantity--;
+  if (index !== -1) {
+    if (cart.value[index].quantity > 1) {
+      cart.value[index].quantity--;
     } else {
-      cart.value = cart.value.filter(cartItem =>
-        !(cartItem.title === title && cartItem.config === config && cartItem.size === size)
-      );
+      cart.value.splice(index, 1);
     }
     localStorage.setItem('cart', JSON.stringify(cart.value));
+  }
+
+  if (isLoggedIn.value && userId.value) {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.post('http://localhost:3000/remove-from-cart', {
+        userId: userId.value,
+        productId: item.product_id,
+        config: item.config,
+        size: item.size,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("Item removed:", response.data); // Log response for debugging
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+    }
   }
 };
 
 const calculateTotalPrice = (item) => {
-  const totalPrice = (Number(item.configprice) + Number(item.configsize)) * item.quantity;
-  item.price = totalPrice;
-  localStorage.setItem('cart', JSON.stringify(cart.value));
+  const product = products.value[item.product_id];
+  const configPrice = product?.configs?.find(config => config.setting === item.config)?.price || 0;
+  const sizePrice = product?.sizes?.find(size => size.size === item.size)?.price || 0;
+  const totalPrice = (configPrice + sizePrice) * item.quantity;
   return totalPrice;
 };
 
 const calculateTotalCartPrice = () => {
   return cart.value.reduce((total, item) => total + calculateTotalPrice(item), 0);
-}
+};
 
-const handleCheckout = () => {
-  const order = [...cart.value];
-  const oldorder = JSON.parse(localStorage.getItem('previousOrders')) || []
-  previousOrders.value = oldorder
-  oldorder.push(order)
-  localStorage.setItem('previousOrders', JSON.stringify(previousOrders.value));
+const triggerCheckout = () => {
+  showInvoice.value = true;
+};
+
+const processCheckout = () => {
+  console.log('Checkout process completed');
   cart.value = [];
-  localStorage.setItem('cart', JSON.stringify(cart.value));
-  closeModal();
-}
+  localStorage.removeItem('cart');
+};
+
+const closeInvoice = () => {
+  showInvoice.value = false;
+};
+
+const checkLoginStatus = async () => {
+  const token = localStorage.getItem('token');
+  console.log("Checking login status...");
+  if (token) {
+    try {
+      const response = await axios.get('http://localhost:3000/verify-token', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("Login status response:", response.data); // Log response data for debugging
+      if (response.status === 200) {
+        isLoggedIn.value = true;
+        userId.value = response.data.userId;
+      }
+    } catch (error) {
+      console.error('Error verifying token:', error);
+      isLoggedIn.value = false;
+    }
+  }
+};
 
 onMounted(() => {
-  loadCart();
+  checkLoginStatus().then(() => {
+    syncCartWithBackend().then(() => {
+      fetchProductDetails().then(() => {
+        loadCart(); // Load cart after fetching product details
+      });
+    });
+  });
 });
 </script>
+
 
 <style>
 .cart-container {
@@ -154,7 +268,6 @@ onMounted(() => {
 .continue-shopping {
   display: block;
   margin-top: 2vh;
-
   text-decoration: none;
 }
 

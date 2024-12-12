@@ -46,15 +46,15 @@
 </template>
 
 <script setup>
-import { defineEmits, ref, computed, defineProps } from 'vue';
+import { defineEmits, ref, computed, defineProps, onMounted } from 'vue';
 import axios from 'axios';
 
 const emit = defineEmits(['close', 'add-to-cart']);
 const SelectedConfig = ref({});
 const SelectedSize = ref({});
 const quantity = ref(1);
-const isLoggedIn = ref(false); // This should be set based on your authentication logic
-const userId = ref(null); // This should be set to the logged-in user's ID
+const isLoggedIn = ref(false);
+const userId = ref(null);
 
 const props = defineProps({
   data: {
@@ -78,21 +78,29 @@ const CartSubmit = async () => {
     quantity: quantity.value,
   };
 
+  console.log("Submitting to cart:", orderedProduct); // Log the product details for debugging
+
   if (isLoggedIn.value && userId.value) {
-    // If the user is logged in, add the item to the cart via the backend
+    const token = localStorage.getItem('token');
+    console.log("User is logged in, adding to backend cart...");
     try {
-      await axios.post('http://localhost:3000/add-to-cart', {
+      const response = await axios.post('http://localhost:3000/add-to-cart', {
         userId: userId.value,
         productId: orderedProduct.product_id,
         config: orderedProduct.config,
         size: orderedProduct.size,
         quantity: orderedProduct.quantity,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
+      console.log("Backend response:", response.data); // Log the backend response for debugging
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error('Error adding to backend cart:', error); // Log error for debugging
     }
   } else {
-    // Otherwise, add the item to the cart in local storage
+    console.log("User is not logged in, adding to local storage cart...");
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const existingProduct = cart.find(
       (cartItem) =>
@@ -108,6 +116,7 @@ const CartSubmit = async () => {
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
+    console.log("Local storage cart updated:", cart); // Log the updated cart for debugging
   }
 
   emit('add-to-cart', orderedProduct);
@@ -132,6 +141,32 @@ const totalPrice = computed(() => {
       Number(SelectedConfig.value.price || 0)) *
     quantity.value
   );
+});
+
+const checkLoginStatus = async () => {
+  const token = localStorage.getItem('token');
+  console.log("Checking login status...");
+  if (token) {
+    try {
+      const response = await axios.get('http://localhost:3000/verify-token', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("Login status response:", response.data); // Log response data for debugging
+      if (response.status === 200) {
+        isLoggedIn.value = true;
+        userId.value = response.data.userId;
+      }
+    } catch (error) {
+      console.error('Error verifying token:', error);
+      isLoggedIn.value = false;
+    }
+  }
+};
+
+onMounted(() => {
+  checkLoginStatus();
 });
 </script>
 

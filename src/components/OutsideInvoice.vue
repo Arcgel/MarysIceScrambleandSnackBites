@@ -56,7 +56,7 @@ const printpdf = () => {
           <p>{{ time }}</p>
         </div>
         <div class="invoice-body">
-          <div v-for="item in cart" :key="item.title" class="invoice-item">
+          <div v-for="item in cart" :key="item.product_id" class="invoice-item">
             <h2>{{ item.title }}</h2>
             <p>Type: {{ item.config }}</p>
             <p>Size: {{ item.size }}</p>
@@ -64,13 +64,13 @@ const printpdf = () => {
             <p>Price: ₱ {{ item.price }}</p>
           </div>
         </div>
+        <button @click="printpdf" class="save">Save as PDF</button>
       </div>
-      <button @click="printpdf" class="save">Save as PDF</button>
     </div>
   </div>
 </template>
 
-<style>
+<style scoped>
 .recieptbackground {
   width: 100vw;
   height: 100vh;
@@ -91,6 +91,7 @@ const printpdf = () => {
   max-width: 500px;
   background-color: antiquewhite;
   padding: 2vw;
+  margin: 2vh;
   border-radius: 1vh;
   align-self: self-start;
 }

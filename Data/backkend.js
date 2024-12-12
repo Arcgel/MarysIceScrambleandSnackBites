@@ -20,6 +20,57 @@ db.connect((err) => {
   console.log('Connected to MySQL database');
 });
 
+// Middleware for JWT authentication
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.status(401).send('Token required');
+
+  jwt.verify(token, 'your_jwt_secret_key', (err, user) => {
+    if (err) return res.status(403).send('Invalid token');
+    req.user = user;
+    next();
+  });
+};
+
+// User registration
+app.post('/register', async (req, res) => {
+  const { email, password, firstname, lastname } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const query = 'INSERT INTO users (email, password, firstname, lastname) VALUES (?, ?, ?, ?)';
+
+  db.query(query, [email, hashedPassword, firstname, lastname], (err) => {
+    if (err) {
+      return res.status(500).send('Error registering user');
+    }
+    res.status(200).send('User registered successfully');
+  });
+});
+
+// User login
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  const query = 'SELECT * FROM users WHERE email = ?';
+
+  db.query(query, [email], async (err, results) => {
+    if (err) {
+      return res.status(500).send('Error fetching user');
+    }
+    if (results.length === 0) {
+      return res.status(401).send('User not found');
+    }
+
+    const user = results[0];
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.status(401).send('Invalid password');
+    }
+
+    const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret_key', { expiresIn: '1h' });
+    res.status(200).json({ token });
+  });
+});
+
 // Fetch products with sizes and settings
 app.get('/products', (req, res) => {
   const query = `
@@ -57,12 +108,10 @@ app.get('/products', (req, res) => {
   });
 });
 
-// Add to cart
-// Add to cart
-app.post('/add-to-cart', (req, res) => {
+//Add to Cart
+app.post('/add-to-cart', authenticateToken, (req, res) => {
   const { userId, productId, config, size, quantity } = req.body;
 
-  // Check if the item already exists in the cart
   const checkQuery = 'SELECT * FROM carts WHERE user_id = ? AND product_id = ? AND config = ? AND size = ?';
   db.query(checkQuery, [userId, productId, config, size], (err, results) => {
     if (err) {
@@ -71,7 +120,6 @@ app.post('/add-to-cart', (req, res) => {
     }
 
     if (results.length > 0) {
-      // Item exists, update the quantity
       const existingItem = results[0];
       const newQuantity = existingItem.quantity + quantity;
       const updateQuery = 'UPDATE carts SET quantity = ? WHERE id = ?';
@@ -83,7 +131,6 @@ app.post('/add-to-cart', (req, res) => {
         res.status(200).send('Cart updated successfully');
       });
     } else {
-      // Item does not exist, insert a new entry
       const insertQuery = 'INSERT INTO carts (user_id, product_id, config, size, quantity) VALUES (?, ?, ?, ?, ?)';
       db.query(insertQuery, [userId, productId, config, size, quantity], (err) => {
         if (err) {
@@ -98,7 +145,7 @@ app.post('/add-to-cart', (req, res) => {
 
 
 // Fetch user cart
-app.get('/cart/:userId', (req, res) => {
+app.get('/cart/:userId', authenticateToken, (req, res) => {
   const { userId } = req.params;
   const query = 'SELECT * FROM carts WHERE user_id = ?';
   db.query(query, [userId], (err, results) => {
@@ -109,8 +156,23 @@ app.get('/cart/:userId', (req, res) => {
   });
 });
 
+
+//Remove with Cart
+app.post('/remove-from-cart', authenticateToken, (req, res) => {
+  const { userId, productId, config, size } = req.body;
+
+  const deleteQuery = 'DELETE FROM carts WHERE user_id = ? AND product_id = ? AND config = ? AND size = ?';
+  db.query(deleteQuery, [userId, productId, config, size], (err) => {
+    if (err) {
+      console.error('Error removing from cart:', err);
+      return res.status(500).send('Error removing from cart');
+    }
+    res.status(200).send('Item removed from cart successfully');
+  });
+});
+
 // Fetch previous orders
-app.get('/previous-orders/:userId', (req, res) => {
+app.get('/previous-orders/:userId', authenticateToken, (req, res) => {
   const { userId } = req.params;
   db.query(`
     SELECT o.id AS order_id, o.order_date, o.total, oi.product_id, oi.config, oi.size, oi.quantity, oi.price, p.title, p.image
@@ -128,7 +190,7 @@ app.get('/previous-orders/:userId', (req, res) => {
 });
 
 // Fetch favorites
-app.get('/favorites/:userId', (req, res) => {
+app.get('/favorites/:userId', authenticateToken, (req, res) => {
   const { userId } = req.params;
   const query = `
     SELECT p.id, p.title, p.description, p.image, f.user_id
@@ -145,7 +207,7 @@ app.get('/favorites/:userId', (req, res) => {
 });
 
 // Add feedback
-app.post('/feedback', (req, res) => {
+app.post('/feedback', authenticateToken, (req, res) => {
   const { userId, message } = req.body;
   const query = 'INSERT INTO feedback (user_id, message) VALUES (?, ?)';
   db.query(query, [userId, message], (err) => {
@@ -156,8 +218,8 @@ app.post('/feedback', (req, res) => {
   });
 });
 
-// Checkout
-app.post('/checkout', (req, res) => {
+// Checkout continued
+app.post('/checkout', authenticateToken, (req, res) => {
   const { userId, orderItems, total } = req.body;
 
   db.beginTransaction((err) => {
@@ -195,41 +257,9 @@ app.post('/checkout', (req, res) => {
   });
 });
 
-// User login
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  const query = 'SELECT * FROM users WHERE email = ?';
-  db.query(query, [email], async (err, results) => {
-    if (err) {
-      return res.status(500).send('Error fetching user');
-    }
-    if (results.length === 0) {
-      return res.status(401).send('User not found');
-    }
-
-    const user = results[0];
-    const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) {
-      return res.status(401).send('Invalid password');
-    }
-
-    const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret_key', { expiresIn: '1h' });
-    res.status(200).json({ token });
-  });
-});
-
-// User registration
-app.post('/register', async (req, res) => {
-  const { email, password, firstname, lastname } = req.body;
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const query = 'INSERT INTO users (email, password, firstname, lastname) VALUES (?, ?, ?, ?)';
-  db.query(query, [email, hashedPassword, firstname, lastname], (err) => {
-    if (err) {
-      return res.status(500).send('Error registering user');
-    }
-    res.status(200).send('User registered successfully');
-  });
+// Verify token
+app.get('/verify-token', authenticateToken, (req, res) => {
+  res.status(200).json({ userId: req.user.id });
 });
 
 app.listen(3000, () => {
