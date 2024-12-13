@@ -1,12 +1,10 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import html2pdf from 'html2pdf.js';
+import axios from 'axios';
 
 const props = defineProps({
-  cart: {
-    type: Array,
-    required: true
-  },
-  orderId: {
+  userId: {
     type: Number,
     required: true
   }
@@ -26,15 +24,82 @@ const time = now.toLocaleString("en-US", {
 
 const emit = defineEmits(['close', 'print']);
 
+const cart = ref([]);
+const products = ref({});
+const totalPrice = ref(0);
+
 const closeModal = () => {
   emit('close');
 };
 
-const calculateTotalPrice = () => {
-  return props.cart.reduce((acc, item) => acc + item.price, 0);
+const loadCart = async () => {
+  try {
+    const token = localStorage.getItem('token');
+
+    // Fetch cart items
+    const cartResponse = await axios.get(`http://localhost:3000/cart/${props.userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    cart.value = cartResponse.data;
+
+    // Fetch product details
+    const productResponse = await axios.get('http://localhost:3000/products', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    products.value = productResponse.data.reduce((acc, product) => {
+      acc[product.id] = product;
+      return acc;
+    }, {});
+
+    // Calculate total price and update cart with product details
+    totalPrice.value = cart.value.reduce((acc, item) => {
+      const product = products.value[item.product_id];
+      const configPrice = product?.setting.find(config => config.setting === item.config)?.price || 0;
+      const sizePrice = product?.sizes.find(size => size.size === item.size)?.price || 0;
+      const itemPrice = (configPrice + sizePrice) * item.quantity;
+      item.price = itemPrice;
+      item.title = product?.title || 'Unknown Product';
+      return acc + itemPrice;
+    }, 0);
+
+  } catch (error) {
+    console.error('Error loading cart:', error);
+  }
 };
 
-const printpdf = () => {
+const commitOrder = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.post('http://localhost:3000/checkout', {
+      userId: props.userId,
+      cartItems: cart.value,
+      total: totalPrice.value
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    return response.data.orderId;
+  } catch (error) {
+    console.error('Error committing order:', error);
+    return null;
+  }
+};
+
+const printpdf = async () => {
+  const orderId = await commitOrder();
+  if (!orderId) {
+    console.error('Error: Order could not be committed.');
+    return;
+  }
+
   const element = document.getElementById('invoice');
   const opt = {
     margin: 1,
@@ -47,6 +112,10 @@ const printpdf = () => {
     emit('print');
   });
 };
+
+onMounted(() => {
+  loadCart();
+});
 </script>
 
 <template>
@@ -57,7 +126,6 @@ const printpdf = () => {
           <h1>Mary's Ice Scramble and Sweets</h1>
           <p>{{ date }}</p>
           <p>{{ time }}</p>
-          <p>Order ID: {{ orderId }}</p>
         </div>
         <div class="invoice-body">
           <div v-for="item in cart" :key="item.product_id" class="invoice-item">
@@ -69,7 +137,7 @@ const printpdf = () => {
           </div>
         </div>
         <div class="total-price">
-          <h3>Total Price: ₱ {{ calculateTotalPrice() }}</h3>
+          <h3>Total Price: ₱ {{ totalPrice }}</h3>
         </div>
         <button @click="printpdf" class="save">Save as PDF</button>
       </div>

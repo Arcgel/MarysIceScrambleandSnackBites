@@ -27,17 +27,10 @@
         <h2>Email:</h2>
         <div class="withbutton">
           <input v-model="user.email" readonly />
-          <span v-if="!user.isVerified">
-            <button class="verify" @click="verifymodal">Verify Email</button>
-          </span>
-          <span v-else>
-            <button class="edit" @click="editField('email')">Change Email</button>
-          </span>
+          <button class="edit" @click="editField('email')">Change Email</button>
         </div>
       </div>
       <button class="logout" @click="logout">Log Out</button>
-
-      <VerifyEmailModal v-if="showVerifyModal" @close="showVerifyModal = false" />
       <EditFieldModal v-if="showEditModal" :field="currentField" :user="user" @close="handleFieldModalClose" @update="fetchUserDetails" />
     </div>
     <div v-else>
@@ -49,7 +42,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import VerifyEmailModal from './VerifyEmailModal.vue';
 import EditFieldModal from './EditFieldModal.vue';
 
 const user = ref({
@@ -60,13 +52,8 @@ const user = ref({
   isVerified: false
 });
 const loggedIn = ref(false);
-const showVerifyModal = ref(false);
 const showEditModal = ref(false);
 const currentField = ref('');
-
-const verifymodal = () => {
-  showVerifyModal.value = true;
-};
 
 const editField = (field) => {
   currentField.value = field;
@@ -130,10 +117,9 @@ onMounted(() => {
   flex: 1;
   padding: 10px;
   margin-right: 10px;
-
 }
 
-.edit, .verify, .logout {
+.edit, .logout {
   padding: 10px 20px;
   background-color: #fcc38e;
   border: none;

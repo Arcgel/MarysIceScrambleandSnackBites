@@ -27,8 +27,9 @@
       <p>Total Items Cost: ₱ {{ calculateTotalCartPrice() }}</p>
       <p>Shipping: Pickup</p>
       <p>Total Cost: ₱ {{ calculateTotalCartPrice() }}</p>
-      <button class="Checkout" @click="triggerShowInvoice">Checkout</button>
-      <OutsideInvoice v-if="showInvoice" :cart="cart" :orderId="orderId" @close="closeInvoice" @print="handlePrintInvoice" />
+      <button class="Checkout" @click="confirmPurchase">Checkout</button>
+      <p v-if="showPrompt" class="prompt">Please double-click to confirm your purchase</p>
+      <OutsideInvoice v-if="showInvoice" :userId="userId" @close="closeInvoice" @print="handlePrintInvoice" />
     </div>
   </div>
 </template>
@@ -44,7 +45,8 @@ const isLoggedIn = ref(false);
 const userId = ref(null);
 const products = ref({});
 const showInvoice = ref(false);
-const orderId = ref(null);
+const showPrompt = ref(false);
+let clickTimeout = null;
 
 const fetchProductDetails = async () => {
   try {
@@ -173,27 +175,17 @@ const calculateTotalCartPrice = () => {
   return cart.value.reduce((total, item) => total + (item.price || calculateTotalPrice(item)), 0);
 };
 
-const triggerShowInvoice = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    const total = calculateTotalCartPrice();
-    const response = await axios.post('http://localhost:3000/checkout', {
-      cartItems: cart.value.map(item => ({
-        ...item,
-        price: item.price || calculateTotalPrice(item)
-      })),
-      total
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    orderId.value = response.data.orderId;
+const confirmPurchase = () => {
+  if (clickTimeout) {
+    clearTimeout(clickTimeout);
     showInvoice.value = true;
-  } catch (error) {
-    console.error('Error during checkout:', error);
-    console.error('Response:', error.response); // Log the response
+    showPrompt.value = false;
+  } else {
+    showPrompt.value = true;
+    clickTimeout = setTimeout(() => {
+      showPrompt.value = false;
+      clickTimeout = null;
+    }, 2000);
   }
 };
 
@@ -319,7 +311,7 @@ onMounted(() => {
   padding: 1vh 2vh;
 }
 
-.order-summary button{
+.order-summary button {
   width: 100%;
   padding: 2vh;
   margin: 0 auto;
@@ -327,6 +319,12 @@ onMounted(() => {
   color: black;
   border: none;
   cursor: pointer;
+}
+
+.prompt {
+  color: red;
+  font-weight: bold;
+  margin-top: 2vh;
 }
 
 @media (max-width: 768px) {

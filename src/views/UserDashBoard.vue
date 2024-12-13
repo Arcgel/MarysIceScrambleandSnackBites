@@ -11,8 +11,7 @@
           <h4>Order History</h4>
         </div>
       </div>
-      </div>
-      </div>
+    </div>
     <div class="UserContent">
       <div v-if="loggedin">
         <component :is="currentComponent" />
@@ -21,14 +20,15 @@
         <UserComponent @loginStatusChanged="handleLoginStatusChange" />
       </div>
     </div>
+  </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import PreviousPurchase from '../components/PreviousPurchase.vue';
 import UserComponent from '../components/UserRegsiterandLogin.vue';
-import ContactComponent from '../components/ContactComponent.vue';
 import UserSettings from '../components/UserSettings.vue';
 
 const componentrendering = ref('user');
@@ -37,7 +37,7 @@ const loggedin = ref(false);
 const components = {
   user: UserSettings,
   history: PreviousPurchase,
-  support: ContactComponent,
+
 };
 
 const currentComponent = computed(() => components[componentrendering.value]);
@@ -98,7 +98,7 @@ onMounted(() => {
 .Favorites,
 .Supportpage {
   width: 17vw;
-  height: 24vh;
+  height: 40vh;
   border-radius: 2vh;
   background-color: rgb(283, 147, 83);
   backdrop-filter: blur(50px);
