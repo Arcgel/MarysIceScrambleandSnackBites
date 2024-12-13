@@ -1,5 +1,5 @@
 <template>
-  <div class="logsinbg">
+  <div class="logsinbg" v-if="!loggedin">
     <div class="LogsinForm" v-if="login">
       <div class="Logheading">
         <h1>LogIn</h1>
@@ -62,20 +62,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import axios from 'axios';
 
-const firstname = ref('')
-const lastname = ref('')
-const login = ref(true)
-const email = ref('')
-const password = ref('')
-const confirmpass = ref('')
-const errorMessage = ref('')
+const emit = defineEmits(['loginStatusChanged']);
+const firstname = ref('');
+const lastname = ref('');
+const login = ref(true);
+const email = ref('');
+const password = ref('');
+const confirmpass = ref('');
+const errorMessage = ref('');
+const loggedin = ref(false);
 
 const logreg = () => {
-  login.value = !login.value
-}
+  login.value = !login.value;
+};
 
 const handleLogin = async () => {
   try {
@@ -85,7 +87,8 @@ const handleLogin = async () => {
     });
     localStorage.setItem('token', response.data.token);
     errorMessage.value = '';
-    // Redirect or update the UI after successful login
+    loggedin.value = true;
+    emit('loginStatusChanged', true);
   } catch (err) {
     errorMessage.value = err.response.data;
   }
@@ -110,10 +113,16 @@ const handleSignup = async () => {
     errorMessage.value = err.response.data;
   }
 };
+
+watch(loggedin, (newVal) => {
+  if (newVal) {
+    // Redirect or handle login state change
+  }
+});
 </script>
 
 <style>
-.logsinbg{
+.logsinbg {
   width: 100%;
   height: 100%;
   display: flex;
@@ -121,15 +130,15 @@ const handleSignup = async () => {
   justify-content: center;
   box-sizing: border-box;
 }
-.LogsinForm{
- width: 60%;
- height: 100%;
- display: flex;
- flex-direction: column;
- justify-content: center;
- padding: 2vw;
+.LogsinForm {
+  width: 60%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2vw;
 }
-.LogsinForm input{
+.LogsinForm input {
   width: 100%;
   background-color: antiquewhite;
   padding: 1vw;
@@ -137,18 +146,18 @@ const handleSignup = async () => {
   border-bottom: 2vw;
   border-radius: 1vh;
 }
-.Logheading, .switch, .submitlogin{
+.Logheading, .switch, .submitlogin {
   margin-bottom: 2vh;
   text-align: center;
 }
-.submitlogin button{
+.submitlogin button {
   background-color: antiquewhite;
   padding: 1vh 5vw;
   border-bottom: 2vw;
   border-radius: 1vh;
   cursor: pointer;
 }
-.switch button{
+.switch button {
   background-color: inherit;
   margin-left: 0.5vh;
   color: aliceblue;

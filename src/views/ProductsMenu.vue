@@ -13,12 +13,9 @@
           </div>
           <div class="prodshowtext">
             <div class="text-design">
-              <div class="heart-icon" @click.passive="toggleFavorite(product)">
-                  <i :class="['fa-heart', isFavorite(product) ? 'fas' : 'far']"></i>
               <div class="title-row">
                 <h3>{{ product.title }}</h3>
               </div>
-            </div>
             <span v-for="sizes in product.sizes" :key="sizes" class="prodsizes">
               <h5>{{ sizes.size }}</h5>
             </span>
@@ -70,24 +67,6 @@ const productdescription = (product) => {
 const closeModal = () => {
   showModal.value = false
   selectedproduct.value = null
-}
-
-const toggleFavorite = (product) => {
-  let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-  const index = favorites.findIndex(fav => fav.id === product.id);
-
-  if (index === -1) {
-    favorites.push(product);
-  } else {
-    favorites.splice(index, 1);
-  }
-
-  localStorage.setItem('favorites', JSON.stringify(favorites));
-}
-
-const isFavorite = (product) => {
-  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-  return favorites.some(fav => fav.id === product.id);
 }
 
 </script>

@@ -38,28 +38,49 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 const previousOrders = ref([]);
 const selectedOrderIndex = ref(null);
 const selectedOrder = ref(null);
 
-const loadPreviousOrders = () => {
-  const storedOrders = JSON.parse(localStorage.getItem('previousOrders')) || [];
-  previousOrders.value = storedOrders;
+const loadPreviousOrders = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:3000/previous-orders', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    previousOrders.value = groupOrdersByOrderId(response.data);
+  } catch (error) {
+    console.error('Error fetching previous orders:', error);
+  }
+};
+
+const groupOrdersByOrderId = (orders) => {
+  const groupedOrders = {};
+  orders.forEach(order => {
+    if (!groupedOrders[order.id]) {
+      groupedOrders[order.id] = [];
+    }
+    groupedOrders[order.id].push(order);
+  });
+  return Object.values(groupedOrders);
 };
 
 const updateSelectedOrder = () => {
   selectedOrder.value = previousOrders.value[selectedOrderIndex.value];
 };
 
-const reorderSelected = () => {
+const reorderSelected = async () => {
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   const orderItems = selectedOrder.value;
 
   if (orderItems && orderItems.length) {
     orderItems.forEach(orderItem => {
       const existingProduct = cart.find(cartItem =>
-        cartItem.title === orderItem.title &&
+        cartItem.product_id === orderItem.product_id &&
         cartItem.config === orderItem.config &&
         cartItem.size === orderItem.size
       );
@@ -67,7 +88,14 @@ const reorderSelected = () => {
       if (existingProduct) {
         existingProduct.quantity += orderItem.quantity;
       } else {
-        cart.push({ ...orderItem });
+        cart.push({
+          product_id: orderItem.product_id,
+          title: orderItem.title,
+          config: orderItem.config,
+          size: orderItem.size,
+          quantity: orderItem.quantity,
+          price: orderItem.price,
+        });
       }
     });
 

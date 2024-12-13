@@ -39,6 +39,7 @@
             <h3> ₱ {{ totalPrice }}</h3>
           </div>
           <button type="submit" class="movingcart">Add to Cart</button>
+
         </div>
       </div>
     </form>
@@ -170,7 +171,6 @@ onMounted(() => {
 });
 </script>
 
-
 <style>
 .floatingvalues {
   background: rgba(252, 237, 240, 0.3);
@@ -234,12 +234,16 @@ onMounted(() => {
   border: none;
 }
 
-.ItemConfig, .ItemSize, .ItemQuantity, .ItemPrice{
+.ItemConfig,
+.ItemSize,
+.ItemQuantity,
+.ItemQuantity,
+.ItemPrice {
   width: 100%;
   box-sizing: border-box;
 }
 
-.ItemPrice{
+.ItemPrice {
   background-color: #fcc38e;
   border-radius: 0.5vw;
   display: flex;
@@ -248,12 +252,12 @@ onMounted(() => {
   padding: 2vw;
 }
 
-.ItemQuantity{
-background-color: #fcc38e;
-border-radius: 0.5vw;
+.ItemQuantity {
+  background-color: #fcc38e;
+  border-radius: 0.5vw;
 }
 
-.quantitytext{
+.quantitytext {
   padding: 1vw 2vw;
 }
 
@@ -265,7 +269,7 @@ border-radius: 0.5vw;
   padding-bottom: 1vw;
 }
 
-.quantityinput{
+.quantityinput {
   padding: 0.5vw 1vw;
   font-size: 1.5vw;
   text-align: center;
@@ -324,7 +328,9 @@ border-radius: 0.5vw;
     padding: 0 4vw;
   }
 
-  .modal-styling select, .quantity-controls button, .quantity-controls input {
+  .modal-styling select,
+  .quantity-controls button,
+  .quantity-controls input {
     padding: 2vh;
     font-size: 4vw;
     border-radius: 2vw;

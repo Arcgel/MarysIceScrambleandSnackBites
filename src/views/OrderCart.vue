@@ -26,9 +26,9 @@
       <p>Items: {{ cart.length }}</p>
       <p>Total Items Cost: ₱ {{ calculateTotalCartPrice() }}</p>
       <p>Shipping: Pickup</p>
-      <p>Total Cost: ₱ {{ calculateTotalCartPrice() + 50 }}</p>
-      <button class="Checkout" @click="triggerCheckout">Checkout</button>
-      <OutsideInvoice v-if="showInvoice" :cart="cart" @close="closeInvoice" @checkout="processCheckout" />
+      <p>Total Cost: ₱ {{ calculateTotalCartPrice() }}</p>
+      <button class="Checkout" @click="triggerShowInvoice">Checkout</button>
+      <OutsideInvoice v-if="showInvoice" :cart="cart" :orderId="orderId" @close="closeInvoice" @print="handlePrintInvoice" />
     </div>
   </div>
 </template>
@@ -39,10 +39,12 @@ import axios from 'axios';
 import OutsideInvoice from '../components/OutsideInvoice.vue';
 
 const cart = ref([]);
+const initialCartState = ref([]);
 const isLoggedIn = ref(false);
 const userId = ref(null);
 const products = ref({});
 const showInvoice = ref(false);
+const orderId = ref(null);
 
 const fetchProductDetails = async () => {
   try {
@@ -70,6 +72,7 @@ const syncCartWithBackend = async () => {
           config: item.config,
           size: item.size,
           quantity: item.quantity,
+          price: calculateTotalPrice(item)
         }, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -101,6 +104,7 @@ const loadCart = async () => {
           title: product ? product.title : 'Unknown Product',
         };
       });
+      initialCartState.value = JSON.parse(JSON.stringify(cart.value)); // Store initial cart state
       console.log("Loaded cart from backend:", cart.value); // Log the loaded cart for debugging
     } catch (error) {
       console.error('Error loading cart from backend:', error); // Log error for debugging
@@ -112,8 +116,10 @@ const loadCart = async () => {
       return {
         ...item,
         title: product ? product.title : 'Unknown Product',
+        price: calculateTotalPrice(item) // Ensure price is calculated and stored
       };
     });
+    initialCartState.value = JSON.parse(JSON.stringify(cart.value)); // Store initial cart state
     console.log("Loaded cart from local storage:", cart.value); // Log the loaded cart for debugging
   }
 };
@@ -156,27 +162,49 @@ const removeFromCart = async (item) => {
 
 const calculateTotalPrice = (item) => {
   const product = products.value[item.product_id];
-  const configPrice = product?.configs?.find(config => config.setting === item.config)?.price || 0;
-  const sizePrice = product?.sizes?.find(size => size.size === item.size)?.price || 0;
-  const totalPrice = (configPrice + sizePrice) * item.quantity;
-  return totalPrice;
+  if (!product) return 0;
+
+  const configPrice = product.setting.find(config => config.setting === item.config)?.price || 0;
+  const sizePrice = product.sizes.find(size => size.size === item.size)?.price || 0;
+  return (configPrice + sizePrice) * item.quantity;
 };
 
 const calculateTotalCartPrice = () => {
-  return cart.value.reduce((total, item) => total + calculateTotalPrice(item), 0);
+  return cart.value.reduce((total, item) => total + (item.price || calculateTotalPrice(item)), 0);
 };
 
-const triggerCheckout = () => {
-  showInvoice.value = true;
+const triggerShowInvoice = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const total = calculateTotalCartPrice();
+    const response = await axios.post('http://localhost:3000/checkout', {
+      cartItems: cart.value.map(item => ({
+        ...item,
+        price: item.price || calculateTotalPrice(item)
+      })),
+      total
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    orderId.value = response.data.orderId;
+    showInvoice.value = true;
+  } catch (error) {
+    console.error('Error during checkout:', error);
+    console.error('Response:', error.response); // Log the response
+  }
 };
 
-const processCheckout = () => {
-  console.log('Checkout process completed');
+const handlePrintInvoice = () => {
   cart.value = [];
   localStorage.removeItem('cart');
+  showInvoice.value = false;
 };
 
 const closeInvoice = () => {
+  cart.value = JSON.parse(JSON.stringify(initialCartState.value)); // Revert cart to initial state
   showInvoice.value = false;
 };
 
@@ -212,7 +240,6 @@ onMounted(() => {
   });
 });
 </script>
-
 
 <style>
 .cart-container {

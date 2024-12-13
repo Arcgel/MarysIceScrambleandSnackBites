@@ -1,9 +1,13 @@
 <script setup>
 import html2pdf from 'html2pdf.js';
 
-defineProps({
+const props = defineProps({
   cart: {
     type: Array,
+    required: true
+  },
+  orderId: {
+    type: Number,
     required: true
   }
 });
@@ -20,16 +24,15 @@ const time = now.toLocaleString("en-US", {
   second: "2-digit"
 });
 
-const emit = defineEmits(['close', 'checkout']);
+const emit = defineEmits(['close', 'print']);
 
 const closeModal = () => {
   emit('close');
-}
+};
 
-const handleCheckout = () => {
-  emit('checkout');
-  closeModal();
-}
+const calculateTotalPrice = () => {
+  return props.cart.reduce((acc, item) => acc + item.price, 0);
+};
 
 const printpdf = () => {
   const element = document.getElementById('invoice');
@@ -41,9 +44,9 @@ const printpdf = () => {
     jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
   };
   html2pdf().from(element).set(opt).save().then(() => {
-    handleCheckout();
+    emit('print');
   });
-}
+};
 </script>
 
 <template>
@@ -54,6 +57,7 @@ const printpdf = () => {
           <h1>Mary's Ice Scramble and Sweets</h1>
           <p>{{ date }}</p>
           <p>{{ time }}</p>
+          <p>Order ID: {{ orderId }}</p>
         </div>
         <div class="invoice-body">
           <div v-for="item in cart" :key="item.product_id" class="invoice-item">
@@ -63,6 +67,9 @@ const printpdf = () => {
             <p>Quantity: {{ item.quantity }}</p>
             <p>Price: ₱ {{ item.price }}</p>
           </div>
+        </div>
+        <div class="total-price">
+          <h3>Total Price: ₱ {{ calculateTotalPrice() }}</h3>
         </div>
         <button @click="printpdf" class="save">Save as PDF</button>
       </div>
@@ -121,6 +128,13 @@ const printpdf = () => {
 
 .invoice-item p {
   margin: 0.5vh 0;
+}
+
+.total-price {
+  margin-top: 2vh;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .save {
