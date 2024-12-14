@@ -3,10 +3,10 @@ import { ref, onMounted } from 'vue';
 import html2pdf from 'html2pdf.js';
 import axios from 'axios';
 
-const props = defineProps({
+defineProps({
   userId: {
     type: Number,
-    required: true
+    required: false
   }
 });
 
@@ -33,25 +33,13 @@ const closeModal = () => {
 };
 
 const loadCart = async () => {
+  // Load cart items from local storage
+  const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+  cart.value = storedCart;
+
   try {
-    const token = localStorage.getItem('token');
-
-    // Fetch cart items
-    const cartResponse = await axios.get(`http://localhost:3000/cart/${props.userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    cart.value = cartResponse.data;
-
     // Fetch product details
-    const productResponse = await axios.get('http://localhost:3000/products', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
+    const productResponse = await axios.get('http://localhost:3000/products');
     products.value = productResponse.data.reduce((acc, product) => {
       acc[product.id] = product;
       return acc;
@@ -69,37 +57,11 @@ const loadCart = async () => {
     }, 0);
 
   } catch (error) {
-    console.error('Error loading cart:', error);
+    console.error('Error loading products:', error);
   }
 };
 
-const commitOrder = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    const response = await axios.post('http://localhost:3000/checkout', {
-      userId: props.userId,
-      cartItems: cart.value,
-      total: totalPrice.value
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    return response.data.orderId;
-  } catch (error) {
-    console.error('Error committing order:', error);
-    return null;
-  }
-};
-
-const printpdf = async () => {
-  const orderId = await commitOrder();
-  if (!orderId) {
-    console.error('Error: Order could not be committed.');
-    return;
-  }
-
+const printpdf = () => {
   const element = document.getElementById('invoice');
   const opt = {
     margin: 1,
